@@ -342,7 +342,12 @@ def run():
 
 def send_test():
     post_telegram("✅ Тест: ботът на <b>Евтини Полети</b> работи. Скоро тук ще публикуваме най-евтините полети от България ✈️")
-    log("test message sent")
+    log("telegram test message sent")
+    if C.FB_PAGE_ID and C.FB_PAGE_TOKEN:
+        post_facebook("✈️ Добре дошли в Евтини Полети БГ! Тук ще публикуваме най-евтините полети от София, "
+                      "Пловдив, Варна и Бургас веднага щом ги открием. Последвайте страницата, за да не "
+                      "изпуснете следващата оферта! 🔔", "https://t.me/evtini_poleti_bg")
+        log("facebook test post published")
 
 
 if __name__ == "__main__":

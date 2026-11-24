@@ -3,7 +3,7 @@ from datetime import date, datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scanner"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 import main as M  # noqa: E402
 
 TODAY = date(2026, 11, 24)
