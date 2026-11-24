@@ -74,12 +74,12 @@ def month_list(today, n):
 
 
 # ---------------------------------------------------------------- Travelpayouts
-def fetch_month(origin, month):
-    """Cheapest one-way tickets from `origin` to anywhere departing in `month` (cached data).
+def fetch_month(origin, month, one_way=True):
+    """Cheapest tickets (one-way or round-trip) from `origin` to anywhere departing in `month` (cached data).
     Merges the Bulgarian market with the default market for wider coverage."""
     base = "https://api.travelpayouts.com/aviasales/v3/prices_for_dates"
     params = {
-        "origin": origin, "departure_at": month, "one_way": "true", "unique": "false",
+        "origin": origin, "departure_at": month, "one_way": "true" if one_way else "false", "unique": "false",
         "sorting": "price", "direct": "false", "currency": C.CURRENCY, "limit": 1000, "page": 1,
         "token": C.TP_TOKEN,
     }
@@ -93,10 +93,18 @@ def fetch_month(origin, month):
             log(f"warning: got currency {res.get('currency')}, skipping")
             continue
         for r in res.get("data") or []:
-            k = (r.get("destination"), r.get("departure_at"), r.get("price"))
-            if k not in seen:
-                seen.add(k)
-                out.append(r)
+            k = (r.get("destination"), r.get("departure_at"), r.get("return_at"), r.get("price"))
+            if k in seen:
+                continue
+            if not one_way:
+                if not r.get("return_at"):
+                    continue
+                days = (datetime.fromisoformat(r["return_at"]).date() - datetime.fromisoformat(r["departure_at"]).date()).days
+                if not (C.MIN_TRIP_DAYS <= days <= C.MAX_TRIP_DAYS):
+                    continue
+            r["trip"] = "ow" if one_way else "rt"
+            seen.add(k)
+            out.append(r)
     return out
 
 
@@ -132,7 +140,12 @@ def airline_name(code, names):
 
 # ---------------------------------------------------------------- deal detection
 def route_key(t):
-    return f"{t['origin']}-{t['destination']}"
+    base = f"{t['origin']}-{t['destination']}"
+    return base + "-RT" if t.get("trip") == "rt" else base
+
+
+def always_deal_limit(trip):
+    return C.ALWAYS_DEAL_RT_EUR if trip == "rt" else C.ALWAYS_DEAL_EUR
 
 
 def update_history(history, tickets, today):
@@ -173,7 +186,7 @@ def find_deals(tickets, history, today):
 
         typical = statistics.median(samples) if len(samples) >= C.MIN_SAMPLES else None
         reason = None
-        if price <= C.ALWAYS_DEAL_EUR:
+        if price <= always_deal_limit(best.get("trip")):
             reason = "cheap"
         if typical and price <= typical * (1 - C.MIN_DROP) and typical - price >= C.MIN_SAVING_EUR:
             reason = "drop"
@@ -185,6 +198,8 @@ def find_deals(tickets, history, today):
             "price": round(price), "typical": round(typical) if typical else None,
             "drop": round(drop, 2), "reason": reason,
             "departure_at": best["departure_at"], "airline": best.get("airline", ""),
+            "trip": best.get("trip", "ow"), "return_at": best.get("return_at") if best.get("trip") == "rt" else None,
+            "return_transfers": best.get("return_transfers", 0),
             "origin_airport": best.get("origin_airport") or best["origin"],
             "dest_airport": best.get("destination_airport") or best["destination"],
             "transfers": best.get("transfers", 0), "link": best.get("link", ""),
@@ -225,6 +240,9 @@ def verify_live(deal):
         "outbound_date": deal["departure_at"][:10], "type": 2, "currency": "EUR",
         "gl": "bg", "hl": "en", "api_key": C.SERPAPI_KEY,
     }
+    if deal.get("trip") == "rt" and deal.get("return_at"):
+        params["type"] = 1
+        params["return_date"] = deal["return_at"][:10]
     res = http_json("https://serpapi.com/search.json", params, timeout=60)
     prices = [f["price"] for k in ("best_flights", "other_flights") for f in res.get(k, []) if f.get("price")]
     return min(prices) if prices else None
@@ -236,14 +254,21 @@ def live_still_deal(deal, live):
         return False
     if live <= deal["price"] * C.VERIFY_TOLERANCE:
         return True
-    if live <= C.ALWAYS_DEAL_EUR + 5:
+    if live <= always_deal_limit(deal.get("trip")) * 1.25:
         return True
     return bool(deal.get("typical")) and live <= deal["typical"] * (1 - C.MIN_DROP * 0.75)
 
 
 # ---------------------------------------------------------------- formatting
 def booking_link(deal):
-    link = deal["link"] or f"/search/{deal['origin']}{deal['departure_at'][8:10]}{deal['departure_at'][5:7]}{deal['destination']}1"
+    if deal["link"]:
+        link = deal["link"]
+    else:
+        d = deal["departure_at"]
+        link = f"/search/{deal['origin']}{d[8:10]}{d[5:7]}{deal['destination']}"
+        if deal.get("return_at"):
+            link += f"{deal['return_at'][8:10]}{deal['return_at'][5:7]}"
+        link += "1"
     sep = "&" if "?" in link else "?"
     return f"https://www.aviasales.com{link}{sep}marker={C.TP_MARKER}&sub_id=tg&currency=eur&locale=bg"
 
@@ -257,11 +282,19 @@ def format_post(deal, names, html=True):
     frm, to = city_name(deal["origin"], names), city_name(deal["destination"], names)
     stops = "директен полет" if not deal["transfers"] else f"{deal['transfers']} прекачване"
     b = (lambda s: f"<b>{s}</b>") if html else (lambda s: s)
-    lines = [f"🔥 {b(f'{frm} → {to}')}", f"💶 само {b(str(deal['price']) + ' €')} в едната посока"]
+    rt = deal.get("trip") == "rt" and deal.get("return_at")
+    arrow = "⇄" if rt else "→"
+    kind = "отиване и връщане" if rt else "в едната посока"
+    lines = [f"🔥 {b(f'{frm} {arrow} {to}')}", f"💶 само {b(str(deal['price']) + ' €')} {kind}"]
     if deal.get("typical") and deal["drop"] >= 0.2:
         lines.append(f"📉 обикновено ~{deal['typical']} € (−{round(deal['drop'] * 100)}%)")
+    if rt:
+        days = (datetime.fromisoformat(deal["return_at"]).date() - datetime.fromisoformat(deal["departure_at"]).date()).days
+        lines.append(f"🛫 {format_date(deal['departure_at'])}")
+        lines.append(f"🛬 {format_date(deal['return_at'])} ({days} дни)")
+    else:
+        lines.append(f"📅 {format_date(deal['departure_at'])}")
     lines += [
-        f"📅 {format_date(deal['departure_at'])}",
         f"✈️ {airline_name(deal['airline'], names)} · {stops}",
         "",
         f"👉 Резервирай: {booking_link(deal)}",
@@ -315,12 +348,14 @@ def run():
     tickets = []
     for origin in C.ORIGINS:
         for month in month_list(today, C.MONTHS_AHEAD):
-            try:
-                rows = fetch_month(origin, month)
-                tickets += rows
-                log(f"{origin} {month}: {len(rows)} prices")
-            except Exception as e:
-                log(f"{origin} {month}: fetch failed: {e}")
+            for one_way in (True, False):
+                kind = "one-way" if one_way else "round-trip"
+                try:
+                    rows = fetch_month(origin, month, one_way)
+                    tickets += rows
+                    log(f"{origin} {month} {kind}: {len(rows)} prices")
+                except Exception as e:
+                    log(f"{origin} {month} {kind}: fetch failed: {e}")
 
     deals = find_deals(tickets, history, today)  # judge against history BEFORE adding today's prices
     update_history(history, tickets, today)

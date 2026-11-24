@@ -18,8 +18,12 @@ MARKET = "bg"
 MIN_DROP = 0.40          # 40% below typical
 # ...and saves at least this many euros
 MIN_SAVING_EUR = 15
-# Anything at or below this price is always a deal (one-way)
-ALWAYS_DEAL_EUR = 19
+# Anything at or below this price is always a deal
+ALWAYS_DEAL_EUR = 19      # one-way
+ALWAYS_DEAL_RT_EUR = 39   # round trip (there and back)
+# Round trips: only trips of this length (days) are considered
+MIN_TRIP_DAYS = 2
+MAX_TRIP_DAYS = 21
 # Need at least this many price points to judge "typical"
 MIN_SAMPLES = 4
 # Ignore departures sooner than this (too late to book)
