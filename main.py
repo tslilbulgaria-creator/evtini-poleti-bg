@@ -352,6 +352,8 @@ def run():
                 rejected[deal["route"]] = {"at": now.isoformat(), "price": deal["price"]}
                 continue
             deal["price"] = round(live)
+            if deal.get("typical"):
+                deal["drop"] = round(1 - deal["price"] / deal["typical"], 2)
         try:
             publish(deal, names)
         except Exception as e:
