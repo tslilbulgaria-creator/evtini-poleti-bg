@@ -23,8 +23,8 @@ from names_bg import AIRLINES_BG, CITIES_BG  # noqa: E402
 TZ = ZoneInfo("Europe/Sofia")
 ROOT = Path(__file__).resolve().parent
 STATE = ROOT / "state"
-HISTORY_FILE = STATE / "history.json"
-POSTED_FILE = STATE / "posted.json"
+HISTORY_FILE = STATE / "history_eur.json"
+POSTED_FILE = STATE / "posted_v2.json"
 COUNTERS_FILE = STATE / "counters.json"
 NAMES_FILE = STATE / "names_en.json"
 
@@ -74,21 +74,29 @@ def month_list(today, n):
 
 # ---------------------------------------------------------------- Travelpayouts
 def fetch_month(origin, month):
-    """Cheapest one-way tickets from `origin` to anywhere departing in `month` (cached data)."""
+    """Cheapest one-way tickets from `origin` to anywhere departing in `month` (cached data).
+    Merges the Bulgarian market with the default market for wider coverage."""
     base = "https://api.travelpayouts.com/aviasales/v3/prices_for_dates"
     params = {
         "origin": origin, "departure_at": month, "one_way": "true", "unique": "false",
-        "sorting": "price", "direct": "false", "cy": C.CURRENCY, "limit": 1000, "page": 1,
+        "sorting": "price", "direct": "false", "currency": C.CURRENCY, "limit": 1000, "page": 1,
         "token": C.TP_TOKEN,
     }
-    if C.MARKET:
-        params["market"] = C.MARKET
-    res = http_json(base, params)
-    data = res.get("data") or []
-    if not data and C.MARKET:  # market with little data -> retry on default market
-        params.pop("market")
-        data = (http_json(base, params).get("data") or [])
-    return data
+    seen, out = set(), []
+    for market in ([C.MARKET] if C.MARKET else []) + [None]:
+        p = dict(params)
+        if market:
+            p["market"] = market
+        res = http_json(base, p)
+        if (res.get("currency") or C.CURRENCY).lower() != C.CURRENCY.lower():
+            log(f"warning: got currency {res.get('currency')}, skipping")
+            continue
+        for r in res.get("data") or []:
+            k = (r.get("destination"), r.get("departure_at"), r.get("price"))
+            if k not in seen:
+                seen.add(k)
+                out.append(r)
+    return out
 
 
 def load_english_names():
@@ -316,6 +324,9 @@ def run():
             publish(deal, names)
         except Exception as e:
             log("publish failed:", e)
+            continue
+        if C.DRY_RUN:
+            posted_now += 1
             continue
         posted[deal["route"]] = {"at": now.isoformat(), "price": deal["price"]}
         posted_now += 1
