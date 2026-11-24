@@ -26,6 +26,7 @@ STATE = ROOT / "state"
 HISTORY_FILE = STATE / "history_eur.json"
 POSTED_FILE = STATE / "posted_v2.json"
 COUNTERS_FILE = STATE / "counters.json"
+REJECTED_FILE = STATE / "rejected.json"
 NAMES_FILE = STATE / "names_en.json"
 
 BG_MONTHS = ["", "яну", "фев", "мар", "апр", "май", "юни", "юли", "авг", "сеп", "окт", "ное", "дек"]
@@ -184,6 +185,8 @@ def find_deals(tickets, history, today):
             "price": round(price), "typical": round(typical) if typical else None,
             "drop": round(drop, 2), "reason": reason,
             "departure_at": best["departure_at"], "airline": best.get("airline", ""),
+            "origin_airport": best.get("origin_airport") or best["origin"],
+            "dest_airport": best.get("destination_airport") or best["destination"],
             "transfers": best.get("transfers", 0), "link": best.get("link", ""),
             "score": drop + (0.5 if reason == "cheap" else 0),
         })
@@ -202,16 +205,40 @@ def already_posted(deal, posted, now):
 
 
 # ---------------------------------------------------------------- live verification
+CITY_AIRPORTS = {
+    "MIL": "MXP,BGY,LIN", "LON": "LHR,LGW,STN,LTN,LCY,SEN", "PAR": "CDG,ORY,BVA", "ROM": "FCO,CIA",
+    "STO": "ARN,NYO,BMA", "BUH": "OTP,BBU", "NYC": "JFK,EWR,LGA", "WAS": "IAD,DCA,BWI", "TYO": "HND,NRT",
+    "OSA": "KIX,ITM", "BER": "BER", "VCE": "VCE,TSF", "BRU": "BRU,CRL", "FRA": "FRA,HHN", "DXB": "DXB,DWC",
+    "IST": "IST,SAW", "MOW": "SVO,DME,VKO", "REK": "KEF", "TCI": "TFS,TFN", "OSL": "OSL,TRF,RYG",
+}
+
+
+def airport_ids(code):
+    return CITY_AIRPORTS.get(code, code)
+
+
 def verify_live(deal):
     """Re-check price on Google Flights via SerpApi. Returns live price or None."""
     params = {
-        "engine": "google_flights", "departure_id": deal["origin"], "arrival_id": deal["destination"],
+        "engine": "google_flights", "departure_id": airport_ids(deal.get("origin_airport") or deal["origin"]),
+        "arrival_id": airport_ids(deal.get("dest_airport") or deal["destination"]),
         "outbound_date": deal["departure_at"][:10], "type": 2, "currency": "EUR",
         "gl": "bg", "hl": "en", "api_key": C.SERPAPI_KEY,
     }
     res = http_json("https://serpapi.com/search.json", params, timeout=60)
     prices = [f["price"] for k in ("best_flights", "other_flights") for f in res.get(k, []) if f.get("price")]
     return min(prices) if prices else None
+
+
+def live_still_deal(deal, live):
+    """Accept the live price if it is close to the cached one, or is still a deal on its own."""
+    if not live:
+        return False
+    if live <= deal["price"] * C.VERIFY_TOLERANCE:
+        return True
+    if live <= C.ALWAYS_DEAL_EUR + 5:
+        return True
+    return bool(deal.get("typical")) and live <= deal["typical"] * (1 - C.MIN_DROP * 0.75)
 
 
 # ---------------------------------------------------------------- formatting
@@ -280,6 +307,7 @@ def run():
     now = datetime.now(TZ)
     today = now.date()
     history, posted = load(HISTORY_FILE, {}), load(POSTED_FILE, {})
+    rejected = load(REJECTED_FILE, {})
     counters = load(COUNTERS_FILE, {})
     if counters.get("day") != today.isoformat():
         counters = {"day": today.isoformat(), "posts": 0, "verifies": 0}
@@ -306,6 +334,9 @@ def run():
             break
         if already_posted(deal, posted, now):
             continue
+        rej = rejected.get(deal["route"])
+        if rej and now - datetime.fromisoformat(rej["at"]) < timedelta(hours=12) and deal["price"] >= rej["price"]:
+            continue
         if C.SERPAPI_KEY:
             if verified_now >= C.MAX_VERIFY_PER_RUN or counters["verifies"] >= C.MAX_VERIFY_PER_DAY:
                 break
@@ -317,9 +348,10 @@ def run():
                 log("verify failed:", e)
                 continue
             log(f"verify {deal['route']}: cached {deal['price']} live {live}")
-            if not live or live > deal["price"] * C.VERIFY_TOLERANCE:
+            if not live_still_deal(deal, live):
+                rejected[deal["route"]] = {"at": now.isoformat(), "price": deal["price"]}
                 continue
-            deal["price"] = round(min(live, deal["price"]))
+            deal["price"] = round(live)
         try:
             publish(deal, names)
         except Exception as e:
@@ -338,6 +370,8 @@ def run():
     save(HISTORY_FILE, history)
     save(POSTED_FILE, posted)
     save(COUNTERS_FILE, counters)
+    cutoff_r = now - timedelta(hours=12)
+    save(REJECTED_FILE, {k: v for k, v in rejected.items() if datetime.fromisoformat(v["at"]) > cutoff_r})
 
 
 def send_test():
