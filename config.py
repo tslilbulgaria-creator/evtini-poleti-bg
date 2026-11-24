@@ -38,6 +38,9 @@ POST_HOUR_END = 22
 REPOST_AFTER_DAYS = 4
 REPOST_EXTRA_DROP = 0.10
 
+# --- Scheduled engagement content (tips, questions, digest, destination of the week) ---
+ENABLE_CONTENT = False
+
 # --- Live verification (SerpApi / Google Flights), optional ---
 MAX_VERIFY_PER_RUN = 3
 MAX_VERIFY_PER_DAY = 8   # ~240/month fits SerpApi free plan (250)

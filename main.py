@@ -9,6 +9,7 @@ State (price history, what was posted) is kept in state/*.json.
 """
 import html as htmllib
 import json
+import re
 import uuid
 import statistics
 import sys
@@ -29,6 +30,7 @@ HISTORY_FILE = STATE / "history_eur.json"
 POSTED_FILE = STATE / "posted_v2.json"
 COUNTERS_FILE = STATE / "counters.json"
 REJECTED_FILE = STATE / "rejected.json"
+CONTENT_FILE = STATE / "content.json"
 NAMES_FILE = STATE / "names_en.json"
 
 BG_MONTHS = ["", "яну", "фев", "мар", "апр", "май", "юни", "юли", "авг", "сеп", "окт", "ное", "дек"]
@@ -404,7 +406,8 @@ def run():
     rejected = load(REJECTED_FILE, {})
     counters = load(COUNTERS_FILE, {})
     if counters.get("day") != today.isoformat():
-        counters = {"day": today.isoformat(), "posts": 0, "verifies": 0}
+        counters = {"day": today.isoformat(), "posts": 0, "verifies": 0, "deals": []}
+    counters.setdefault("deals", [])
 
     tickets = []
     for origin in C.ORIGINS:
@@ -459,9 +462,18 @@ def run():
             posted_now += 1
             continue
         posted[deal["route"]] = {"at": now.isoformat(), "price": deal["price"]}
+        arrow = "⇄" if deal.get("trip") == "rt" else "→"
+        counters["deals"].append({"route_text": f"{city_name(deal['origin'], names)} {arrow} {city_name(deal['destination'], names)}",
+                                  "price": deal["price"]})
         posted_now += 1
         counters["posts"] += 1
         log(f"POSTED {deal['route']} {deal['price']}€")
+
+    if C.ENABLE_CONTENT:
+        try:
+            post_scheduled_content(now, counters, deals)
+        except Exception as e:
+            log("scheduled content failed:", e)
 
     cutoff = now - timedelta(days=30)
     posted = {k: v for k, v in posted.items() if datetime.fromisoformat(v["at"]) > cutoff}
@@ -470,6 +482,42 @@ def run():
     save(COUNTERS_FILE, counters)
     cutoff_r = now - timedelta(hours=12)
     save(REJECTED_FILE, {k: v for k, v in rejected.items() if datetime.fromisoformat(v["at"]) > cutoff_r})
+
+
+def destination_of_week(deals, names):
+    cands = [d for d in deals if d.get("typical") and d["drop"] >= 0.3 and d.get("trip") != "rt"]
+    if not cands:
+        return None
+    d = max(cands, key=lambda x: x["drop"])
+    frm, to = city_name(d["origin"], names), city_name(d["destination"], names)
+    caption = (f"{frm} → {to}: полети от {d['price']} € в едната посока "
+               f"(обикновено ~{d['typical']} €).\n\n👉 Резервирай: {booking_link(d, 'fb')}")
+    return {"card": f"{to} от {d['price']} € — полети от {frm}", "caption": caption}
+
+
+def post_scheduled_content(now, counters, deals):
+    import content
+    state = load(CONTENT_FILE, {})
+    names = load_english_names()
+    for key, html, plain, jpeg in content.plan(now, state, counters.get("deals", []), destination_of_week(deals, names)):
+        if C.DRY_RUN:
+            log(f"DRY RUN — would post scheduled content [{key}]:\n{plain}")
+            continue
+        try:
+            tg = re.sub(r"👉 Резервирай: (\S+)",
+                        lambda m: f'👉 <a href="{htmllib.escape(m.group(1).replace("sub_id=fb", "sub_id=tg"), quote=True)}">Резервирай тук</a>',
+                        html)
+            post_telegram_photo(tg, jpeg)
+        except Exception as e:
+            log("content telegram failed:", e)
+        if C.FB_PAGE_ID and C.FB_PAGE_TOKEN:
+            try:
+                post_facebook_photo(plain, jpeg)
+            except Exception as e:
+                log("content facebook failed:", e)
+        state[key] = now.date().isoformat()
+        log(f"POSTED scheduled content [{key}]")
+    save(CONTENT_FILE, state)
 
 
 def send_test():
