@@ -21,7 +21,7 @@ import config as C  # noqa: E402
 from names_bg import AIRLINES_BG, CITIES_BG  # noqa: E402
 
 TZ = ZoneInfo("Europe/Sofia")
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent
 STATE = ROOT / "state"
 HISTORY_FILE = STATE / "history.json"
 POSTED_FILE = STATE / "posted.json"
