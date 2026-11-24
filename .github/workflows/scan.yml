@@ -1,0 +1,54 @@
+name: Scan flight deals
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "scan / test / dry"
+        default: scan
+
+permissions:
+  contents: write
+
+concurrency:
+  group: scanner
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run scanner
+        env:
+          TP_TOKEN: ${{ secrets.TP_TOKEN }}
+          TP_MARKER: ${{ secrets.TP_MARKER }}
+          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          TG_CHANNEL: ${{ secrets.TG_CHANNEL }}
+          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+          DRY_RUN: ${{ github.event.inputs.mode == 'dry' && '1' || '' }}
+        run: |
+          if [ "${{ github.event.inputs.mode }}" = "test" ]; then
+            python main.py --test
+          else
+            python main.py
+          fi
+
+      - name: Save state
+        if: always()
+        run: |
+          git config user.name "deal-bot"
+          git config user.email "deal-bot@users.noreply.github.com"
+          git add state/ || true
+          git diff --cached --quiet || git commit -m "state update [skip ci]"
+          git pull --rebase -q || true
+          git push -q || true
