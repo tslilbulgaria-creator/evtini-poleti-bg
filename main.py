@@ -7,7 +7,9 @@ Runs every 30 minutes (GitHub Actions):
   4. posts real deals to Telegram (and Facebook, when configured)
 State (price history, what was posted) is kept in state/*.json.
 """
+import html as htmllib
 import json
+import uuid
 import statistics
 import sys
 import urllib.parse
@@ -47,6 +49,21 @@ def http_json(url, params=None, data=None, headers=None, timeout=30):
     req = urllib.request.Request(url, data=body, headers=headers or {})
     req.add_header("Accept-Encoding", "identity")
     req.add_header("User-Agent", "evtini-poleti-scanner/1.0")
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        return json.loads(r.read().decode())
+
+
+def http_multipart(url, fields, file_field, filename, content, mime="image/jpeg", timeout=60):
+    boundary = uuid.uuid4().hex
+    body = bytearray()
+    for k, v in fields.items():
+        body += f'--{boundary}\r\nContent-Disposition: form-data; name="{k}"\r\n\r\n'.encode()
+        body += str(v).encode("utf-8") + b"\r\n"
+    body += f'--{boundary}\r\nContent-Disposition: form-data; name="{file_field}"; filename="{filename}"\r\n'.encode()
+    body += f"Content-Type: {mime}\r\n\r\n".encode() + content + b"\r\n"
+    body += f"--{boundary}--\r\n".encode()
+    req = urllib.request.Request(url, data=bytes(body), headers={
+        "Content-Type": f"multipart/form-data; boundary={boundary}", "User-Agent": "evtini-poleti-scanner/1.0"})
     with urllib.request.urlopen(req, timeout=timeout) as r:
         return json.loads(r.read().decode())
 
@@ -260,7 +277,7 @@ def live_still_deal(deal, live):
 
 
 # ---------------------------------------------------------------- formatting
-def booking_link(deal):
+def booking_link(deal, sub_id="tg"):
     if deal["link"]:
         link = deal["link"]
     else:
@@ -270,7 +287,7 @@ def booking_link(deal):
             link += f"{deal['return_at'][8:10]}{deal['return_at'][5:7]}"
         link += "1"
     sep = "&" if "?" in link else "?"
-    return f"https://www.aviasales.com{link}{sep}marker={C.TP_MARKER}&sub_id=tg&currency=eur&locale=bg"
+    return f"https://www.aviasales.com{link}{sep}marker={C.TP_MARKER}&sub_id={sub_id}&currency=eur&locale=bg"
 
 
 def format_date(iso):
@@ -278,7 +295,7 @@ def format_date(iso):
     return f"{BG_WEEKDAYS[d.weekday()]}, {d.day} {BG_MONTHS[d.month]} {d.year}"
 
 
-def format_post(deal, names, html=True):
+def format_post(deal, names, html=True, anchor=False, sub_id="tg"):
     frm, to = city_name(deal["origin"], names), city_name(deal["destination"], names)
     stops = "директен полет" if not deal["transfers"] else f"{deal['transfers']} прекачване"
     b = (lambda s: f"<b>{s}</b>") if html else (lambda s: s)
@@ -297,7 +314,8 @@ def format_post(deal, names, html=True):
     lines += [
         f"✈️ {airline_name(deal['airline'], names)} · {stops}",
         "",
-        f"👉 Резервирай: {booking_link(deal)}",
+        (f'👉 <a href="{htmllib.escape(booking_link(deal, sub_id), quote=True)}">Резервирай тук</a>' if anchor
+         else f"👉 Резервирай: {booking_link(deal, sub_id)}"),
         "",
         "⚠️ Цените се променят бързо — проверете преди да платите.",
     ]
@@ -320,17 +338,60 @@ def post_facebook(text, link):
         raise RuntimeError(f"Facebook error: {res}")
 
 
+def post_telegram_photo(caption, jpeg):
+    url = f"https://api.telegram.org/bot{C.TG_BOT_TOKEN}/sendPhoto"
+    res = http_multipart(url, {"chat_id": C.TG_CHANNEL, "caption": caption, "parse_mode": "HTML"},
+                         "photo", "deal.jpg", jpeg)
+    if not res.get("ok"):
+        raise RuntimeError(f"Telegram photo error: {res}")
+
+
+def post_facebook_photo(caption, jpeg):
+    url = f"https://graph.facebook.com/v21.0/{C.FB_PAGE_ID}/photos"
+    res = http_multipart(url, {"message": caption, "published": "true", "access_token": C.FB_PAGE_TOKEN},
+                         "source", "deal.jpg", jpeg)
+    if "id" not in res and "post_id" not in res:
+        raise RuntimeError(f"Facebook photo error: {res}")
+
+
+def make_image(deal, names):
+    try:
+        import images
+        return images.deal_image(deal, city_name(deal["origin"], names), city_name(deal["destination"], names),
+                                 airline_name(deal["airline"], names))
+    except Exception as e:
+        log("image generation failed:", e)
+        return None
+
+
 def publish(deal, names):
+    jpeg = make_image(deal, names)
     if C.DRY_RUN:
-        log("DRY RUN — would post:\n" + format_post(deal, names, html=False))
+        log("DRY RUN — would post" + (" (with image)" if jpeg else "") + ":\n" + format_post(deal, names, html=False))
         return
-    post_telegram(format_post(deal, names))
-    if C.FB_PAGE_ID and C.FB_PAGE_TOKEN:
+    # Telegram
+    if jpeg:
         try:
-            post_facebook(format_post(deal, names, html=False).replace("&sub_id=tg", "&sub_id=fb"),
-                          booking_link(deal).replace("sub_id=tg", "sub_id=fb"))
+            post_telegram_photo(format_post(deal, names, html=True, anchor=True), jpeg)
         except Exception as e:
-            log("Facebook post failed:", e)
+            log("Telegram photo failed, sending text:", e)
+            post_telegram(format_post(deal, names))
+    else:
+        post_telegram(format_post(deal, names))
+    # Facebook
+    if C.FB_PAGE_ID and C.FB_PAGE_TOKEN:
+        text = format_post(deal, names, html=False, sub_id="fb")
+        try:
+            if jpeg:
+                post_facebook_photo(text, jpeg)
+            else:
+                post_facebook(text, booking_link(deal, "fb"))
+        except Exception as e:
+            log("Facebook photo failed, trying link post:", e)
+            try:
+                post_facebook(text, booking_link(deal, "fb"))
+            except Exception as e2:
+                log("Facebook post failed:", e2)
 
 
 # ---------------------------------------------------------------- main

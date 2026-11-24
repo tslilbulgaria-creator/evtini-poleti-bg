@@ -26,6 +26,9 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Install image library
+        run: pip install --quiet pillow
+
       - name: Run scanner
         env:
           TP_TOKEN: ${{ secrets.TP_TOKEN }}
