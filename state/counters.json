@@ -24,8 +24,16 @@
   {
    "price": 43,
    "route_text": "София ⇄ Бари"
+  },
+  {
+   "price": 45,
+   "route_text": "София ⇄ Chisinau"
+  },
+  {
+   "price": 43,
+   "route_text": "София ⇄ Бари"
   }
  ],
- "posts": 6,
- "verifies": 6
+ "posts": 8,
+ "verifies": 8
 }
