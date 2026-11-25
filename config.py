@@ -31,7 +31,7 @@ MIN_SAMPLES = 4
 MIN_DAYS_AHEAD = 3
 
 # --- Posting rules ---
-MAX_POSTS_PER_DAY = 8
+MAX_POSTS_PER_DAY = 16
 MAX_POSTS_PER_RUN = 2
 POST_HOUR_START = 8      # Sofia time
 POST_HOUR_END = 22

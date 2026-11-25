@@ -458,9 +458,7 @@ def run():
         rej = rejected.get(deal["route"])
         if rej and now - datetime.fromisoformat(rej["at"]) < timedelta(hours=12) and deal["price"] >= rej["price"]:
             continue
-        if C.SERPAPI_KEY:
-            if verified_now >= C.MAX_VERIFY_PER_RUN or counters["verifies"] >= C.MAX_VERIFY_PER_DAY:
-                break
+        if C.SERPAPI_KEY and verified_now < C.MAX_VERIFY_PER_RUN and counters["verifies"] < C.MAX_VERIFY_PER_DAY:
             verified_now += 1
             counters["verifies"] += 1
             try:
