@@ -1,6 +1,7 @@
 """Bulgarian names for common airports/cities and airlines. Unknown codes fall back to English names from Travelpayouts."""
 
 CITIES_BG = {
+    "RMO": "Кишинев", "KIV": "Кишинев",
     "SOF": "София", "PDV": "Пловдив", "VAR": "Варна", "BOJ": "Бургас",
     "LON": "Лондон", "LTN": "Лондон", "STN": "Лондон", "LGW": "Лондон", "LHR": "Лондон",
     "PAR": "Париж", "BVA": "Париж", "CDG": "Париж", "ORY": "Париж",

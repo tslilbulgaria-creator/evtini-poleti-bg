@@ -5,7 +5,7 @@ import os
 ORIGINS = ["SOF", "PDV", "VAR", "BOJ"]
 
 # How many months ahead to scan (current month included)
-MONTHS_AHEAD = 4
+MONTHS_AHEAD = 6
 
 # Currency shown in posts
 CURRENCY = "eur"
