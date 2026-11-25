@@ -475,6 +475,8 @@ def run():
             deal["price"] = round(live)
             if deal.get("typical"):
                 deal["drop"] = round(1 - deal["price"] / deal["typical"], 2)
+            if already_posted(deal, posted, now):  # live price is what we posted before -> not new
+                continue
         try:
             publish(deal, names)
         except Exception as e:
