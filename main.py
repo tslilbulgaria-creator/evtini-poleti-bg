@@ -22,7 +22,7 @@ from zoneinfo import ZoneInfo
 
 sys.path.insert(0, str(Path(__file__).parent))
 import config as C  # noqa: E402
-from names_bg import AIRLINES_BG, CITIES_BG  # noqa: E402
+from names_bg import AIRLINES_BG, CITIES_BG, COUNTRIES_BG  # noqa: E402
 
 TZ = ZoneInfo("Europe/Sofia")
 ROOT = Path(__file__).resolve().parent
@@ -137,12 +137,14 @@ def fetch_month(origin, month, one_way=True):
 
 def load_english_names():
     names = load(NAMES_FILE, None)
-    if names:
+    if names and names.get("countries"):
         return names
-    names = {"cities": {}, "airports": {}, "airlines": {}}
+    names = {"cities": {}, "airports": {}, "airlines": {}, "countries": {}}
     try:
         for c in http_json("https://api.travelpayouts.com/data/en/cities.json"):
             names["cities"][c["code"]] = c.get("name") or c["code"]
+            if c.get("country_code"):
+                names["countries"][c["code"]] = c["country_code"]
         for a in http_json("https://api.travelpayouts.com/data/en/airports.json"):
             names["airports"][a["code"]] = a.get("city_code") or a["code"]
         for a in http_json("https://api.travelpayouts.com/data/en/airlines.json"):
@@ -159,6 +161,18 @@ def city_name(code, names):
         return CITIES_BG[code]
     city = names.get("airports", {}).get(code, code)
     return CITIES_BG.get(city) or names.get("cities", {}).get(city) or names.get("cities", {}).get(code) or code
+
+
+def country_name(code, names):
+    city = names.get("airports", {}).get(code, code)
+    cc = names.get("countries", {}).get(city) or names.get("countries", {}).get(code)
+    return COUNTRIES_BG.get(cc, "") if cc else ""
+
+
+def place(code, names):
+    """City plus country in Bulgarian, e.g. 'Бари, Италия'. Bulgarian cities stay plain."""
+    city, country = city_name(code, names), country_name(code, names)
+    return f"{city}, {country}" if country and country != "България" else city
 
 
 def airline_name(code, names):
@@ -306,7 +320,7 @@ def format_date(iso):
 
 
 def format_post(deal, names, html=True, anchor=False, sub_id="tg"):
-    frm, to = city_name(deal["origin"], names), city_name(deal["destination"], names)
+    frm, to = city_name(deal["origin"], names), place(deal["destination"], names)
     stops = "директен полет" if not deal["transfers"] else f"{deal['transfers']} прекачване"
     b = (lambda s: f"<b>{s}</b>") if html else (lambda s: s)
     rt = deal.get("trip") == "rt" and deal.get("return_at")
@@ -368,7 +382,7 @@ def make_image(deal, names):
     try:
         import images
         return images.deal_image(deal, city_name(deal["origin"], names), city_name(deal["destination"], names),
-                                 airline_name(deal["airline"], names))
+                                 airline_name(deal["airline"], names), country_name(deal["destination"], names))
     except Exception as e:
         log("image generation failed:", e)
         return None

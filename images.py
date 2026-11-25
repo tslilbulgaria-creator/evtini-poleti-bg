@@ -57,7 +57,7 @@ def short_date(iso):
     return f"{d.day} {BG_MONTHS[d.month]}"
 
 
-def deal_image(deal, frm, to, airline):
+def deal_image(deal, frm, to, airline, country=""):
     """Return JPEG bytes for the deal card."""
     W = H = 1080
     im = background(W, H)
@@ -79,7 +79,11 @@ def deal_image(deal, frm, to, airline):
     for dx in (-150, -115, -80, 80, 115, 150):
         d.ellipse([W / 2 + dx - 6, 395 - 6, W / 2 + dx + 6, 395 + 6], fill=SOFT)
     plane(d, W / 2, 395, 40, 0)
-    d.text((W / 2, 490), to, font=fit(d, to, 900, 104), fill=YEL, anchor="mm")
+    if country:
+        d.text((W / 2, 475), to, font=fit(d, to, 900, 104), fill=YEL, anchor="mm")
+        d.text((W / 2, 550), country.upper(), font=font(36, "SemiBold"), fill=SOFT, anchor="mm")
+    else:
+        d.text((W / 2, 490), to, font=fit(d, to, 900, 104), fill=YEL, anchor="mm")
 
     # price
     price = f"{deal['price']} €"
