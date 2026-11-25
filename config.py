@@ -23,7 +23,7 @@ ALWAYS_DEAL_EUR = 19      # one-way
 ALWAYS_DEAL_RT_EUR = 39   # round trip (there and back)
 # Round trips: only trips of this length (days) are considered
 MIN_TRIP_DAYS = 2
-MAX_TRIP_DAYS = 7      # max one-week holiday
+MAX_TRIP_DAYS = 4      # short breaks: 2-4 days
 ONE_WAY_ENABLED = False  # round trips only
 # Need at least this many price points to judge "typical"
 MIN_SAMPLES = 4
