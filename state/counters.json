@@ -1,55 +1,6 @@
 {
- "day": "2026-11-25",
- "deals": [
-  {
-   "price": 17,
-   "route_text": "София → Милано"
-  },
-  {
-   "price": 40,
-   "route_text": "Варна ⇄ Братислава"
-  },
-  {
-   "price": 17,
-   "route_text": "София → Милано"
-  },
-  {
-   "price": 15,
-   "route_text": "София → Варшава"
-  },
-  {
-   "price": 45,
-   "route_text": "София ⇄ Chisinau"
-  },
-  {
-   "price": 43,
-   "route_text": "София ⇄ Бари"
-  },
-  {
-   "price": 45,
-   "route_text": "София ⇄ Chisinau"
-  },
-  {
-   "price": 43,
-   "route_text": "София ⇄ Бари"
-  },
-  {
-   "price": 38,
-   "route_text": "София ⇄ Варшава"
-  },
-  {
-   "price": 34,
-   "route_text": "София ⇄ Бари"
-  },
-  {
-   "price": 36,
-   "route_text": "София ⇄ Кишинев"
-  },
-  {
-   "price": 31,
-   "route_text": "София ⇄ Милано"
-  }
- ],
- "posts": 9,
- "verifies": 8
+ "day": "2026-11-26",
+ "deals": [],
+ "posts": 0,
+ "verifies": 0
 }
