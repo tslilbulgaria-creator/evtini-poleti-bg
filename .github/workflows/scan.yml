@@ -38,10 +38,12 @@ jobs:
           SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
           FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
           FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
-          DRY_RUN: ${{ github.event.inputs.mode == 'dry' && '1' || '' }}
+          DRY_RUN: ${{ (github.event.inputs.mode == 'dry' || github.event.inputs.mode == 'fbcheck') && '1' || '' }}
         run: |
           if [ "${{ github.event.inputs.mode }}" = "test" ]; then
             python main.py --test
+          elif [ "${{ github.event.inputs.mode }}" = "fbcheck" ]; then
+            python main.py --fbcheck
           else
             python main.py
           fi

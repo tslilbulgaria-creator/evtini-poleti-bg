@@ -14,6 +14,7 @@ import uuid
 import statistics
 import sys
 import urllib.parse
+import urllib.error
 import urllib.request
 from datetime import date, datetime, timedelta
 from pathlib import Path
@@ -42,6 +43,15 @@ def log(*a):
     print(datetime.now(TZ).strftime("%H:%M:%S"), *a, flush=True)
 
 
+def _open(req, timeout):
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            return json.loads(r.read().decode())
+    except urllib.error.HTTPError as e:
+        detail = e.read().decode(errors="replace")[:400]
+        raise RuntimeError(f"HTTP {e.code}: {detail}") from None
+
+
 def http_json(url, params=None, data=None, headers=None, timeout=30):
     if params:
         url = url + ("&" if "?" in url else "?") + urllib.parse.urlencode(params)
@@ -51,8 +61,7 @@ def http_json(url, params=None, data=None, headers=None, timeout=30):
     req = urllib.request.Request(url, data=body, headers=headers or {})
     req.add_header("Accept-Encoding", "identity")
     req.add_header("User-Agent", "evtini-poleti-scanner/1.0")
-    with urllib.request.urlopen(req, timeout=timeout) as r:
-        return json.loads(r.read().decode())
+    return _open(req, timeout)
 
 
 def http_multipart(url, fields, file_field, filename, content, mime="image/jpeg", timeout=60):
@@ -66,8 +75,7 @@ def http_multipart(url, fields, file_field, filename, content, mime="image/jpeg"
     body += f"--{boundary}--\r\n".encode()
     req = urllib.request.Request(url, data=bytes(body), headers={
         "Content-Type": f"multipart/form-data; boundary={boundary}", "User-Agent": "evtini-poleti-scanner/1.0"})
-    with urllib.request.urlopen(req, timeout=timeout) as r:
-        return json.loads(r.read().decode())
+    return _open(req, timeout)
 
 
 def load(path, default):
@@ -531,4 +539,11 @@ def send_test():
 
 
 if __name__ == "__main__":
-    send_test() if "--test" in sys.argv else run()
+    if "--fbcheck" in sys.argv:
+        try:
+            log("FB check:", http_json(f"https://graph.facebook.com/v21.0/{C.FB_PAGE_ID}",
+                                      {"fields": "name,id", "access_token": C.FB_PAGE_TOKEN}))
+        except Exception as e:
+            log("FB check failed:", e)
+    else:
+        send_test() if "--test" in sys.argv else run()
