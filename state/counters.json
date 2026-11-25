@@ -40,8 +40,16 @@
   {
    "price": 34,
    "route_text": "София ⇄ Бари"
+  },
+  {
+   "price": 36,
+   "route_text": "София ⇄ Кишинев"
+  },
+  {
+   "price": 31,
+   "route_text": "София ⇄ Милано"
   }
  ],
- "posts": 7,
+ "posts": 9,
  "verifies": 8
 }
