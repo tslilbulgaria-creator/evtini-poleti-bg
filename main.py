@@ -420,7 +420,7 @@ def run():
     tickets = []
     for origin in C.ORIGINS:
         for month in month_list(today, C.MONTHS_AHEAD):
-            for one_way in (True, False):
+            for one_way in ((True, False) if C.ONE_WAY_ENABLED else (False,)):
                 kind = "one-way" if one_way else "round-trip"
                 try:
                     rows = fetch_month(origin, month, one_way)
