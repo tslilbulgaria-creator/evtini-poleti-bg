@@ -32,8 +32,16 @@
   {
    "price": 43,
    "route_text": "София ⇄ Бари"
+  },
+  {
+   "price": 38,
+   "route_text": "София ⇄ Варшава"
+  },
+  {
+   "price": 34,
+   "route_text": "София ⇄ Бари"
   }
  ],
- "posts": 5,
+ "posts": 7,
  "verifies": 8
 }
