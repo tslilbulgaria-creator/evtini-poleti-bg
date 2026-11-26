@@ -101,6 +101,31 @@ def month_list(today, n):
 
 
 # ---------------------------------------------------------------- Travelpayouts
+def fetch_route(origin, dest):
+    """All cached round-trip prices for one route over the coming months (many date pairs)."""
+    base = "https://api.travelpayouts.com/aviasales/v3/prices_for_dates"
+    params = {"origin": origin, "destination": dest, "one_way": "false", "unique": "false",
+              "sorting": "price", "direct": "false", "currency": C.CURRENCY, "limit": 1000, "page": 1,
+              "token": C.TP_TOKEN}
+    out = []
+    for market in ([C.MARKET] if C.MARKET else []) + [None]:
+        p = dict(params)
+        if market:
+            p["market"] = market
+        res = http_json(base, p)
+        if (res.get("currency") or C.CURRENCY).lower() != C.CURRENCY.lower():
+            continue
+        for r in res.get("data") or []:
+            if not r.get("return_at"):
+                continue
+            days = (datetime.fromisoformat(r["return_at"]).date() - datetime.fromisoformat(r["departure_at"]).date()).days
+            if C.MIN_TRIP_DAYS <= days <= C.MAX_TRIP_DAYS:
+                r["trip"] = "rt"
+                r.setdefault("destination", dest)
+                out.append(r)
+    return out
+
+
 def fetch_month(origin, month, one_way=True):
     """Cheapest tickets (one-way or round-trip) from `origin` to anywhere departing in `month` (cached data).
     Merges the Bulgarian market with the default market for wider coverage."""
@@ -442,6 +467,21 @@ def run():
                     log(f"{origin} {month} {kind}: {len(rows)} prices")
                 except Exception as e:
                     log(f"{origin} {month} {kind}: fetch failed: {e}")
+
+    # Deep scan of popular routes: many more date pairs than the per-month "anywhere" query
+    for origin, dests in C.ROUTES.items():
+        for dest in dests:
+            try:
+                tickets += fetch_route(origin, dest)
+            except Exception as e:
+                log(f"{origin}-{dest}: fetch failed: {e}")
+    seen, uniq = set(), []
+    for t in tickets:
+        k = (t.get("origin"), t.get("destination"), t.get("departure_at"), t.get("return_at"), t.get("price"))
+        if k not in seen:
+            seen.add(k)
+            uniq.append(t)
+    tickets = uniq
 
     deals = find_deals(tickets, history, today)  # judge against history BEFORE adding today's prices
     update_history(history, tickets, today)

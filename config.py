@@ -6,6 +6,15 @@ ORIGINS = ["SOF", "PDV", "VAR", "BOJ"]
 
 # How many months ahead to scan (current month included)
 MONTHS_AHEAD = 6
+# Popular routes scanned in depth every run (city codes)
+ROUTES = {
+    "SOF": ["LON", "MIL", "ROM", "BCN", "MAD", "PAR", "BER", "VIE", "BUD", "PRG", "AMS", "BRU", "ATH", "IST",
+            "TLV", "DXB", "MLA", "NAP", "VCE", "BLQ", "CPH", "STO", "DUB", "EIN", "LIS", "VLC", "AGP", "PMI",
+            "MUC", "FRA", "DUS", "HAM", "NCE", "WAW", "KRK", "BRI", "PSA", "CTA", "TRN", "OTP"],
+    "VAR": ["LON", "BER", "VIE", "MIL", "TLV", "WAW", "BUD", "DUS", "FRA"],
+    "BOJ": ["LON", "BER", "VIE", "MIL", "TLV", "WAW", "BUD", "DUS"],
+    "PDV": ["LON", "EIN", "BRU", "MIL", "DUS"],
+}
 
 # Currency shown in posts
 CURRENCY = "eur"
