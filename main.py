@@ -275,6 +275,51 @@ def find_deals(tickets, history, today):
     return deals
 
 
+def filler_deals(tickets, history, posted, now, today):
+    """Cheapest round trip per route that wasn't posted recently - keeps the channel active."""
+    min_dep = today + timedelta(days=C.MIN_DAYS_AHEAD)
+    best_by = {}
+    for t in tickets:
+        if t.get("trip") != "rt":
+            continue
+        try:
+            if datetime.fromisoformat(t["departure_at"]).date() < min_dep:
+                continue
+        except Exception:
+            continue
+        k = route_key(t)
+        if k not in best_by or float(t["price"]) < float(best_by[k]["price"]):
+            best_by[k] = t
+    out = []
+    for k, best in best_by.items():
+        prev = posted.get(k)
+        if prev and now - datetime.fromisoformat(prev["at"]) < timedelta(days=C.FILLER_REPOST_DAYS):
+            continue
+        price = float(best["price"])
+        if price > C.FILLER_MAX_PRICE:
+            continue
+        past = list(history.get(k, {}).values())
+        typical = statistics.median(past) if len(past) >= C.MIN_SAMPLES else None
+        if typical and price > typical:
+            continue
+        rel = price / typical if typical else 1.0
+        drop = (1 - rel) if typical else 0
+        out.append({
+            "route": k, "origin": best["origin"], "destination": best["destination"],
+            "price": round(price), "typical": round(typical) if typical and drop >= 0.15 else None,
+            "drop": round(drop, 2), "reason": "cheap",
+            "departure_at": best["departure_at"], "airline": best.get("airline", ""),
+            "trip": "rt", "return_at": best.get("return_at"),
+            "return_transfers": best.get("return_transfers", 0),
+            "origin_airport": best.get("origin_airport") or best["origin"],
+            "dest_airport": best.get("destination_airport") or best["destination"],
+            "transfers": best.get("transfers", 0), "link": best.get("link", ""),
+            "score": price * rel,
+        })
+    out.sort(key=lambda d: d["score"])
+    return out
+
+
 def already_posted(deal, posted, now):
     prev = posted.get(deal["route"])
     if not prev:
@@ -509,7 +554,8 @@ def run():
 
     deals = find_deals(tickets, history, today)  # judge against history BEFORE adding today's prices
     update_history(history, tickets, today)
-    log(f"{len(tickets)} prices scanned, {len(deals)} candidate deals")
+    log(f"{len(tickets)} prices scanned, {len(deals)} candidate deals, "
+        f"{sum(1 for d in deals if already_posted(d, posted, now))} already posted")
 
     in_window = C.POST_HOUR_START <= now.hour < C.POST_HOUR_END
     names = load_english_names() if deals else {}
@@ -554,6 +600,30 @@ def run():
         posted_now += 1
         counters["posts"] += 1
         log(f"POSTED {deal['route']} {deal['price']}€")
+
+    # Never let the channel go quiet: fallback post if nothing went out for a while
+    last_at = max((datetime.fromisoformat(v["at"]) for v in posted.values()), default=None)
+    quiet = last_at is None or now - last_at >= timedelta(minutes=C.FILLER_GAP_MIN)
+    if posted_now == 0 and in_window and quiet and counters["posts"] < C.MAX_POSTS_PER_DAY:
+        names = names or load_english_names()
+        recent_dest = {d["route_text"].split()[-1] for d in counters["deals"][-3:]}
+        for deal in filler_deals(tickets, history, posted, now, today):
+            if city_name(deal["destination"], names) in recent_dest:
+                continue
+            try:
+                publish(deal, names)
+            except Exception as e:
+                log("publish failed:", e)
+                continue
+            if not C.DRY_RUN:
+                posted[deal["route"]] = {"at": now.isoformat(), "price": deal["price"]}
+                counters["deals"].append({"route_text": f"{city_name(deal['origin'], names)} ⇄ {city_name(deal['destination'], names)}",
+                                          "price": deal["price"]})
+                counters["posts"] += 1
+            log(f"POSTED (filler) {deal['route']} {deal['price']}€")
+            break
+        else:
+            log("filler: nothing suitable")
 
     if C.ENABLE_CONTENT:
         try:

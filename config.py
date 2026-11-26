@@ -40,7 +40,7 @@ MIN_SAMPLES = 4
 MIN_DAYS_AHEAD = 3
 
 # --- Posting rules ---
-MAX_POSTS_PER_DAY = 16
+MAX_POSTS_PER_DAY = 20
 MAX_POSTS_PER_RUN = 2
 POST_HOUR_START = 8      # Sofia time
 POST_HOUR_END = 22
@@ -66,3 +66,9 @@ FB_PAGE_ID = os.environ.get("FB_PAGE_ID", "")
 FB_PAGE_TOKEN = os.environ.get("FB_PAGE_TOKEN", "")
 
 DRY_RUN = os.environ.get("DRY_RUN", "") == "1"
+
+# Keep the channel alive: if a run finds no new deal and the last post is older than
+# FILLER_GAP_MIN minutes, post the best cheap round trip not posted in FILLER_REPOST_DAYS.
+FILLER_GAP_MIN = 55
+FILLER_REPOST_DAYS = 2
+FILLER_MAX_PRICE = 150
