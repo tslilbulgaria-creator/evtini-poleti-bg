@@ -1,0 +1,29 @@
+name: Voice-over
+on:
+  workflow_dispatch:
+    inputs:
+      lines:
+        description: "path to lines json"
+        default: media/reel1_lines.json
+      out:
+        description: "output folder"
+        default: media/reel1_vo
+permissions:
+  contents: write
+jobs:
+  tts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install --quiet edge-tts
+      - run: python tools/tts.py "${{ github.event.inputs.lines }}" "${{ github.event.inputs.out }}"
+      - run: |
+          git config user.name "deal-bot"
+          git config user.email "deal-bot@users.noreply.github.com"
+          git add media/
+          git commit -m "voice-over [skip ci]" || true
+          git pull --rebase -q || true
+          git push -q
