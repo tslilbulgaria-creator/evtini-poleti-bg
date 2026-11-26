@@ -249,7 +249,7 @@ def run(debug=False):
     if debug:
         log("header:", header)
         for p in sorted(products, key=lambda p: p["discount"], reverse=True)[:5]:
-            log("sample:", {k: p[k] for k in ("adv", "name", "price", "promo", "discount", "currency")})
+            log("sample:", {k: p[k][:120] if isinstance(p[k], str) else p[k] for k in ("adv", "name", "price", "promo", "discount", "link", "image")})
         return
     posted = load(POSTED_FILE, {})
     day = load(DAY_FILE, {})
