@@ -32,7 +32,7 @@ TG_BOT_TOKEN = os.environ.get("TG_BOT_TOKEN", "")
 DEALS_CHANNEL = os.environ.get("TG_DEALS_CHANNEL") or "@evtini_oferti_bg"
 FLIGHTS_CHANNEL = os.environ.get("TG_CHANNEL", "")
 DRY_RUN = bool(os.environ.get("DRY_RUN"))
-FB_PAGE_ID = os.environ.get("FB_DEALS_PAGE_ID", "")
+FB_PAGE_ID = os.environ.get("FB_DEALS_PAGE_ID") or "1554966147694456"
 FB_PAGE_TOKEN = os.environ.get("FB_DEALS_PAGE_TOKEN", "")
 
 MIN_DISCOUNT = 0.40       # only real discounts: at least 40% off
