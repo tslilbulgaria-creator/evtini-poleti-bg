@@ -40,8 +40,12 @@
   {
    "price": 46,
    "route_text": "София ⇄ Неапол"
+  },
+  {
+   "price": 59,
+   "route_text": "Варна ⇄ Рим"
   }
  ],
- "posts": 10,
+ "posts": 11,
  "verifies": 8
 }
