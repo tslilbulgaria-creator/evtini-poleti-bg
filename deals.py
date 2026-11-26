@@ -147,7 +147,7 @@ def parse_feed(text):
         if not price or not promo or promo >= price:
             continue
         products.append({
-            "adv": g("adv"), "category": g("category"), "brand": g("brand"), "code": g("code"),
+            "adv": g("adv").rstrip("/"), "category": g("category"), "brand": g("brand"), "code": g("code"),
             "name": g("name"), "link": link, "image": image, "currency": g("currency") or "EUR",
             "free_ship": g("free_ship").lower() in ("1", "yes", "да", "true"),
             "price": round(price, 2), "promo": round(promo, 2),
