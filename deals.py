@@ -197,8 +197,8 @@ def caption(p):
         "",
         f"💶 <b>{money(p['promo'], p['currency'])}</b>  <s>{money(p['price'], p['currency'])}</s>",
         f"💰 Спестяваш {money(p['price'] - p['promo'], p['currency'])}",
-        # shop name links to OUR affiliate link (a bare "shop.bg" would be auto-linked by Telegram and lose the cookie)
-        f'🏬 <a href="{e(p["link"], quote=True)}">{e(shop)}</a>' + (" · 🚚 безплатна доставка" if p["free_ship"] else ""),
+        # shop name as plain text, never a link (a bare "shop.bg" would be auto-linked by Telegram and lose the cookie)
+        f"🏬 {e(no_autolink(shop))}" + (" · 🚚 безплатна доставка" if p["free_ship"] else ""),
         "",
         f'👉 <a href="{e(p["link"], quote=True)}">Виж офертата</a>',
         "",
