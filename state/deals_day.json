@@ -1,6 +1,6 @@
 {
  "day": "2026-11-26",
- "count": 4,
+ "count": 6,
  "posted": [
   {
    "adv": "obui.bg",
@@ -28,6 +28,20 @@
    "name": "Hayari Paris ONLY FOR HER парфюм за жени 100 мл - EDP",
    "promo": 33.9,
    "discount": 0.79,
+   "currency": "EUR"
+  },
+  {
+   "adv": "technomani.bg",
+   "name": "Полилей Sheen 521SHN1128, 136х28 см, Метално тяло, IP20, E27, Черен",
+   "promo": 9.9,
+   "discount": 0.833,
+   "currency": "EUR"
+  },
+  {
+   "adv": "armadabg.eu",
+   "name": "Елегантна дамска бяла чанта 20047WH",
+   "promo": 8.44,
+   "discount": 0.7,
    "currency": "EUR"
   }
  ],
