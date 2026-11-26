@@ -12,8 +12,16 @@
   {
    "price": 46,
    "route_text": "София ⇄ Брюксел"
+  },
+  {
+   "price": 56,
+   "route_text": "София ⇄ Берлин"
+  },
+  {
+   "price": 59,
+   "route_text": "София ⇄ Париж"
   }
  ],
- "posts": 3,
- "verifies": 3
+ "posts": 5,
+ "verifies": 5
 }
