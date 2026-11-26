@@ -38,7 +38,9 @@ jobs:
           TG_CHANNEL: ${{ secrets.TG_CHANNEL }}
           DRY_RUN: ${{ github.event.inputs.mode == 'dry' && '1' || '' }}
         run: |
-          if [ "${{ github.event.inputs.mode }}" = "chats" ]; then
+          if [ "${{ github.event.inputs.mode }}" = "fix" ]; then
+            python tools/fix_posts.py
+          elif [ "${{ github.event.inputs.mode }}" = "chats" ]; then
             python deals.py --chats
           elif [ "${{ github.event.inputs.mode }}" = "debug" ]; then
             python deals.py --debug
