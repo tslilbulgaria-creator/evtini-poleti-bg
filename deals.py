@@ -293,5 +293,25 @@ def run(debug=False):
         save(DAY_FILE, day)
 
 
+def list_chats():
+    """Print channels the bot was added to (from recent updates)."""
+    url = f"https://api.telegram.org/bot{TG_BOT_TOKEN}/getUpdates?allowed_updates=%5B%22my_chat_member%22%2C%22channel_post%22%5D"
+    with urllib.request.urlopen(url, timeout=30) as r:
+        res = json.loads(r.read().decode())
+    seen = {}
+    for u in res.get("result", []):
+        for k in ("my_chat_member", "channel_post"):
+            chat = (u.get(k) or {}).get("chat")
+            if chat:
+                seen[chat["id"]] = (chat.get("title"), chat.get("username"), chat.get("type"))
+    for cid, (title, uname, typ) in seen.items():
+        log("CHAT", cid, typ, title, "@" + uname if uname else "")
+    if not seen:
+        log("no chats in recent updates")
+
+
 if __name__ == "__main__":
-    run(debug="--debug" in sys.argv)
+    if "--chats" in sys.argv:
+        list_chats()
+    else:
+        run(debug="--debug" in sys.argv)
