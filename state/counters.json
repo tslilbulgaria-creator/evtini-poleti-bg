@@ -1,59 +1,6 @@
 {
- "day": "2026-11-26",
- "deals": [
-  {
-   "price": 39,
-   "route_text": "София ⇄ Будапеща"
-  },
-  {
-   "price": 49,
-   "route_text": "София ⇄ Рим"
-  },
-  {
-   "price": 46,
-   "route_text": "София ⇄ Брюксел"
-  },
-  {
-   "price": 56,
-   "route_text": "София ⇄ Берлин"
-  },
-  {
-   "price": 59,
-   "route_text": "София ⇄ Париж"
-  },
-  {
-   "price": 64,
-   "route_text": "София ⇄ Прага"
-  },
-  {
-   "price": 56,
-   "route_text": "София ⇄ Барселона"
-  },
-  {
-   "price": 75,
-   "route_text": "София ⇄ Nice"
-  },
-  {
-   "price": 44,
-   "route_text": "София ⇄ Малта"
-  },
-  {
-   "price": 46,
-   "route_text": "София ⇄ Неапол"
-  },
-  {
-   "price": 59,
-   "route_text": "Варна ⇄ Рим"
-  },
-  {
-   "price": 59,
-   "route_text": "Варна ⇄ Милано"
-  },
-  {
-   "price": 38,
-   "route_text": "Варна ⇄ Милано"
-  }
- ],
- "posts": 13,
- "verifies": 8
+ "day": "2026-11-27",
+ "deals": [],
+ "posts": 0,
+ "verifies": 0
 }
