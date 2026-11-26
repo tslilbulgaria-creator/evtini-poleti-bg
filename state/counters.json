@@ -36,8 +36,12 @@
   {
    "price": 44,
    "route_text": "София ⇄ Малта"
+  },
+  {
+   "price": 46,
+   "route_text": "София ⇄ Неапол"
   }
  ],
- "posts": 9,
+ "posts": 10,
  "verifies": 8
 }
