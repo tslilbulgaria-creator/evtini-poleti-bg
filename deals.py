@@ -27,7 +27,7 @@ TZ = ZoneInfo("Europe/Sofia")
 
 FEED_URL = os.environ.get("PS_FEED_URL", "")
 TG_BOT_TOKEN = os.environ.get("TG_BOT_TOKEN", "")
-DEALS_CHANNEL = os.environ.get("TG_DEALS_CHANNEL", "")
+DEALS_CHANNEL = os.environ.get("TG_DEALS_CHANNEL") or "@evtini_oferti_bg"
 FLIGHTS_CHANNEL = os.environ.get("TG_CHANNEL", "")
 DRY_RUN = bool(os.environ.get("DRY_RUN"))
 
