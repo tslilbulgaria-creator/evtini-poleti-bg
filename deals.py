@@ -186,7 +186,7 @@ def money(v, cur):
 def no_autolink(text):
     """Stop Telegram from turning 'something.bg' inside text into a direct (non-affiliate) link."""
     import re
-    return re.sub(r"(\w)\.(bg|com|eu|net|org|ro)\b", "\\1\u2024\\2", text)
+    return re.sub(r"(\w)\.([A-Za-z]{2,})", "\\1\u2024\\2", text)
 
 
 def caption(p):
