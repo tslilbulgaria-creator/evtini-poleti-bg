@@ -126,18 +126,17 @@ def num(s):
 
 
 def parse_feed(text):
-    sample = text[:5000]
-    try:
-        dialect = csv.Sniffer().sniff(sample, delimiters=",;|\t")
-    except csv.Error:
-        dialect = csv.excel
-    rows = list(csv.reader(io.StringIO(text), dialect))
+    first = text.split("\n", 1)[0]
+    delim = max(",;|\t", key=first.count)
+    rows = list(csv.reader(io.StringIO(text), delimiter=delim, quotechar='"', doublequote=True))
     if not rows:
         return [], [], {}
     header, body = rows[0], rows[1:]
     cols = map_columns(header)
     products = []
     for r in body:
+        if len(r) != len(header):
+            continue  # malformed row
         def g(k):
             i = cols.get(k)
             return r[i].strip() if i is not None and i < len(r) else ""
