@@ -1,6 +1,6 @@
 {
  "day": "2026-11-26",
- "count": 8,
+ "count": 10,
  "posted": [
   {
    "adv": "obui.bg",
@@ -56,6 +56,20 @@
    "name": "Мъжки боти от естествена кожа ST.FLY SEASON 27 BROWN VELOUR",
    "promo": 30.64,
    "discount": 0.787,
+   "currency": "EUR"
+  },
+  {
+   "adv": "perfume-bg.eu",
+   "name": "Hayari New Oud унисекс парфюм 100 мл - EDP",
+   "promo": 49.9,
+   "discount": 0.726,
+   "currency": "EUR"
+  },
+  {
+   "adv": "technomani.bg",
+   "name": "Нагревател за вода Oliver Voltz OV57100F, 3300W, За плот, Сензорно управление, Дигитален дисплей, Инокс",
+   "promo": 49.9,
+   "discount": 0.686,
    "currency": "EUR"
   }
  ],
