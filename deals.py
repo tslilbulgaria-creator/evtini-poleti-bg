@@ -13,6 +13,7 @@ import json
 import math
 import os
 import sys
+import urllib.error
 import urllib.parse
 import urllib.request
 from datetime import datetime, timedelta
@@ -31,6 +32,8 @@ TG_BOT_TOKEN = os.environ.get("TG_BOT_TOKEN", "")
 DEALS_CHANNEL = os.environ.get("TG_DEALS_CHANNEL") or "@evtini_oferti_bg"
 FLIGHTS_CHANNEL = os.environ.get("TG_CHANNEL", "")
 DRY_RUN = bool(os.environ.get("DRY_RUN"))
+FB_PAGE_ID = os.environ.get("FB_DEALS_PAGE_ID", "")
+FB_PAGE_TOKEN = os.environ.get("FB_DEALS_PAGE_TOKEN", "")
 
 MIN_DISCOUNT = 0.40       # only real discounts: at least 40% off
 MIN_PRICE = 10.0          # original price at least 10 EUR
@@ -218,6 +221,58 @@ def tg(method, data):
     return res
 
 
+def shorten(url):
+    q = urllib.parse.quote(url, safe="")
+    for api in (f"https://is.gd/create.php?format=simple&url={q}", f"https://tinyurl.com/api-create.php?url={q}"):
+        try:
+            req = urllib.request.Request(api, headers={"User-Agent": "evtini-deals-bot/1.0"})
+            with urllib.request.urlopen(req, timeout=15) as r:
+                short = r.read().decode().strip()
+            if short.startswith("https://"):
+                return short
+        except Exception as e:
+            log("shorten failed:", e)
+    return url
+
+
+def fb_text(p):
+    shop = p["adv"] or "онлайн магазин"
+    lines = [
+        f"🔥 −{round(p['discount'] * 100)}% · {no_autolink(p['name'][:180])}",
+        "",
+        f"💶 {money(p['promo'], p['currency'])} (вместо {money(p['price'], p['currency'])})",
+        f"💰 Спестяваш {money(p['price'] - p['promo'], p['currency'])}",
+        f"🏬 {no_autolink(shop)}" + (" · 🚚 безплатна доставка" if p["free_ship"] else ""),
+        "",
+        f"👉 Виж офертата: {shorten(p['link'])}",
+        "",
+        "⚠️ Цените и наличностите се променят бързо.",
+        "",
+        "📲 Всички оферти първи в Telegram: https://t.me/evtini_oferti_bg",
+    ]
+    return "\n".join(lines)
+
+
+def publish_facebook(p):
+    if not (FB_PAGE_ID and FB_PAGE_TOKEN):
+        return
+    base = f"https://graph.facebook.com/v21.0/{FB_PAGE_ID}"
+    text = fb_text(p)
+    try:
+        if p["image"].startswith("http"):
+            data = {"url": p["image"], "message": text, "published": "true", "access_token": FB_PAGE_TOKEN}
+            req = urllib.request.Request(base + "/photos", data=urllib.parse.urlencode(data).encode())
+        else:
+            data = {"message": text, "access_token": FB_PAGE_TOKEN}
+            req = urllib.request.Request(base + "/feed", data=urllib.parse.urlencode(data).encode())
+        with urllib.request.urlopen(req, timeout=60) as r:
+            r.read()
+    except urllib.error.HTTPError as e:
+        log("Facebook failed:", e.code, e.read().decode(errors="replace")[:300])
+    except Exception as e:
+        log("Facebook failed:", e)
+
+
 def publish(p):
     cap = caption(p)
     if p["image"].startswith("http"):
@@ -288,6 +343,7 @@ def run(debug=False):
             try:
                 if not DRY_RUN:
                     publish(p)
+                    publish_facebook(p)
             except Exception as e:
                 log("publish failed:", e)
                 continue

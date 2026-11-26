@@ -36,6 +36,8 @@ jobs:
           TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
           TG_DEALS_CHANNEL: ${{ secrets.TG_DEALS_CHANNEL }}
           TG_CHANNEL: ${{ secrets.TG_CHANNEL }}
+          FB_DEALS_PAGE_ID: ${{ secrets.FB_DEALS_PAGE_ID }}
+          FB_DEALS_PAGE_TOKEN: ${{ secrets.FB_DEALS_PAGE_TOKEN }}
           DRY_RUN: ${{ github.event.inputs.mode == 'dry' && '1' || '' }}
         run: |
           if [ "${{ github.event.inputs.mode }}" = "fix" ]; then
