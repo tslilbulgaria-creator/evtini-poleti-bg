@@ -183,15 +183,22 @@ def money(v, cur):
     return f"{s} €" if sym == "€" else f"{s}{sym}"
 
 
+def no_autolink(text):
+    """Stop Telegram from turning 'something.bg' inside text into a direct (non-affiliate) link."""
+    import re
+    return re.sub(r"(\w)\.(bg|com|eu|net|org|ro)\b", "\\1\u2024\\2", text)
+
+
 def caption(p):
     e = html.escape
     shop = p["adv"] or "онлайн магазин"
     lines = [
-        f"🔥 <b>−{round(p['discount'] * 100)}%</b> · {e(p['name'][:180])}",
+        f"🔥 <b>−{round(p['discount'] * 100)}%</b> · {e(no_autolink(p['name'][:180]))}",
         "",
         f"💶 <b>{money(p['promo'], p['currency'])}</b>  <s>{money(p['price'], p['currency'])}</s>",
         f"💰 Спестяваш {money(p['price'] - p['promo'], p['currency'])}",
-        f"🏬 {e(shop)}" + (" · 🚚 безплатна доставка" if p["free_ship"] else ""),
+        # shop name links to OUR affiliate link (a bare "shop.bg" would be auto-linked by Telegram and lose the cookie)
+        f'🏬 <a href="{e(p["link"], quote=True)}">{e(shop)}</a>' + (" · 🚚 безплатна доставка" if p["free_ship"] else ""),
         "",
         f'👉 <a href="{e(p["link"], quote=True)}">Виж офертата</a>',
         "",
@@ -235,7 +242,7 @@ def teaser(day):
     top = sorted(day["posted"], key=lambda d: d["discount"], reverse=True)[:3]
     lines = ["🛍 <b>Днешните топ намаления</b>", ""]
     for d in top:
-        lines.append(f"• −{round(d['discount'] * 100)}% {html.escape(d['name'][:70])} — {money(d['promo'], d['currency'])}")
+        lines.append(f"• −{round(d['discount'] * 100)}% {html.escape(no_autolink(d['name'][:70]))} — {money(d['promo'], d['currency'])}")
     lines += ["", f'👉 Всички оферти: <a href="{link}">{link.replace("https://", "")}</a>']
     tg("sendMessage", {"chat_id": FLIGHTS_CHANNEL, "text": "\n".join(lines), "parse_mode": "HTML",
                        "disable_web_page_preview": "true"})
