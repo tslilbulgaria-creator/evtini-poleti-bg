@@ -44,8 +44,12 @@
   {
    "price": 59,
    "route_text": "Варна ⇄ Рим"
+  },
+  {
+   "price": 59,
+   "route_text": "Варна ⇄ Милано"
   }
  ],
- "posts": 11,
+ "posts": 12,
  "verifies": 8
 }
