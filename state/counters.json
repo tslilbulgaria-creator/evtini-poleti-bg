@@ -20,8 +20,16 @@
   {
    "price": 59,
    "route_text": "София ⇄ Париж"
+  },
+  {
+   "price": 64,
+   "route_text": "София ⇄ Прага"
+  },
+  {
+   "price": 56,
+   "route_text": "София ⇄ Барселона"
   }
  ],
- "posts": 5,
- "verifies": 7
+ "posts": 7,
+ "verifies": 8
 }
