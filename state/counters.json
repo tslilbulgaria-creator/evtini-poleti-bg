@@ -1,6 +1,15 @@
 {
  "day": "2026-11-26",
- "deals": [],
- "posts": 0,
- "verifies": 0
+ "deals": [
+  {
+   "price": 39,
+   "route_text": "София ⇄ Будапеща"
+  },
+  {
+   "price": 49,
+   "route_text": "София ⇄ Рим"
+  }
+ ],
+ "posts": 2,
+ "verifies": 2
 }
