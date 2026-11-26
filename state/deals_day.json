@@ -1,6 +1,6 @@
 {
  "day": "2026-11-26",
- "count": 10,
+ "count": 12,
  "posted": [
   {
    "adv": "obui.bg",
@@ -71,7 +71,21 @@
    "promo": 49.9,
    "discount": 0.686,
    "currency": "EUR"
+  },
+  {
+   "adv": "alleop.bg",
+   "name": "Сешоар с безчетков мотор AI AENO HD5 AHD0005G, 1500W, 2 скорости, 3 нива, 67 dB, Гласов контрол, Сив",
+   "promo": 99.9,
+   "discount": 0.699,
+   "currency": "EUR"
+  },
+  {
+   "adv": "armadabg.eu",
+   "name": "Дамска черна чанта клъч велур 20070BL",
+   "promo": 8.28,
+   "discount": 0.7,
+   "currency": "EUR"
   }
  ],
- "teaser": false
+ "teaser": true
 }
