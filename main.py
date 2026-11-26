@@ -339,6 +339,28 @@ def booking_link(deal, sub_id="tg"):
     return f"https://www.aviasales.com{link}{sep}marker={C.TP_MARKER}&sub_id={sub_id}&currency=eur&locale=bg"
 
 
+_SHORT = {}
+
+
+def shorten(url):
+    """Short link via is.gd (fallback tinyurl); returns the long URL if both fail."""
+    if url in _SHORT:
+        return _SHORT[url]
+    q = urllib.parse.quote(url, safe="")
+    for api in (f"https://is.gd/create.php?format=simple&url={q}",
+                f"https://tinyurl.com/api-create.php?url={q}"):
+        try:
+            req = urllib.request.Request(api, headers={"User-Agent": "evtini-poleti-scanner/1.0"})
+            with urllib.request.urlopen(req, timeout=15) as r:
+                short = r.read().decode().strip()
+            if short.startswith("https://"):
+                _SHORT[url] = short
+                return short
+        except Exception as e:
+            log("shorten failed:", e)
+    return url
+
+
 def format_date(iso):
     d = datetime.fromisoformat(iso)
     return f"{BG_WEEKDAYS[d.weekday()]}, {d.day} {BG_MONTHS[d.month]} {d.year}"
@@ -364,10 +386,12 @@ def format_post(deal, names, html=True, anchor=False, sub_id="tg"):
         f"✈️ {airline_name(deal['airline'], names)} · {stops}",
         "",
         (f'👉 <a href="{htmllib.escape(booking_link(deal, sub_id), quote=True)}">Резервирай тук</a>' if anchor
-         else f"👉 Резервирай: {booking_link(deal, sub_id)}"),
+         else f"👉 Резервирай: {shorten(booking_link(deal, sub_id))}"),
         "",
         "⚠️ Цените се променят бързо — проверете преди да платите.",
     ]
+    if sub_id == "fb":
+        lines += ["", "📲 Всички оферти първи в Telegram: https://t.me/evtini_poleti_bg"]
     return "\n".join(lines)
 
 
