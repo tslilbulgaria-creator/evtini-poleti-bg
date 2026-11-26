@@ -1,0 +1,53 @@
+name: Product deals
+
+on:
+  schedule:
+    - cron: "20 6-19/2 * * *"   # every 2 hours, roughly 08:20-21:20 Sofia time
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "run / debug / dry"
+        default: run
+
+permissions:
+  contents: write
+
+concurrency:
+  group: scanner
+  cancel-in-progress: false
+
+jobs:
+  deals:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Post product deals
+        env:
+          PS_FEED_URL: ${{ secrets.PS_FEED_URL }}
+          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          TG_DEALS_CHANNEL: ${{ secrets.TG_DEALS_CHANNEL }}
+          TG_CHANNEL: ${{ secrets.TG_CHANNEL }}
+          DRY_RUN: ${{ github.event.inputs.mode == 'dry' && '1' || '' }}
+        run: |
+          if [ "${{ github.event.inputs.mode }}" = "debug" ]; then
+            python deals.py --debug
+          else
+            python deals.py
+          fi
+
+      - name: Save state
+        if: always()
+        run: |
+          git config user.name "deal-bot"
+          git config user.email "deal-bot@users.noreply.github.com"
+          git add state/ || true
+          git diff --cached --quiet || git commit -m "deals state [skip ci]"
+          git pull --rebase -q || true
+          git push -q || true
