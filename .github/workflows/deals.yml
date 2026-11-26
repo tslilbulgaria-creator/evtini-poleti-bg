@@ -31,6 +31,8 @@ jobs:
       - name: Post product deals
         env:
           PS_FEED_URL: ${{ secrets.PS_FEED_URL }}
+          PS_FEED_URL_2: ${{ secrets.PS_FEED_URL_2 }}
+          PS_FEED_URL_3: ${{ secrets.PS_FEED_URL_3 }}
           TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
           TG_DEALS_CHANNEL: ${{ secrets.TG_DEALS_CHANNEL }}
           TG_CHANNEL: ${{ secrets.TG_CHANNEL }}

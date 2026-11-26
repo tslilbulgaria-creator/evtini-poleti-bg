@@ -25,7 +25,8 @@ POSTED_FILE = STATE / "deals_posted.json"
 DAY_FILE = STATE / "deals_day.json"
 TZ = ZoneInfo("Europe/Sofia")
 
-FEED_URL = os.environ.get("PS_FEED_URL", "")
+FEED_URLS = [u for k in ("PS_FEED_URL", "PS_FEED_URL_2", "PS_FEED_URL_3", "PS_FEED_URL_4")
+             for u in os.environ.get(k, "").split() if u.startswith("http")]
 TG_BOT_TOKEN = os.environ.get("TG_BOT_TOKEN", "")
 DEALS_CHANNEL = os.environ.get("TG_DEALS_CHANNEL") or "@evtini_oferti_bg"
 FLIGHTS_CHANNEL = os.environ.get("TG_CHANNEL", "")
@@ -72,8 +73,8 @@ def save(path, obj):
     path.write_text(json.dumps(obj, ensure_ascii=False, indent=1), encoding="utf-8")
 
 
-def fetch_feed():
-    req = urllib.request.Request(FEED_URL, headers={"User-Agent": "evtini-deals-bot/1.0"})
+def fetch_feed(url):
+    req = urllib.request.Request(url, headers={"User-Agent": "evtini-deals-bot/1.0"})
     with urllib.request.urlopen(req, timeout=120) as r:
         raw = r.read()
     for enc in ("utf-8-sig", "cp1251", "latin-1"):
@@ -242,13 +243,20 @@ def teaser(day):
 
 
 def run(debug=False):
-    if not FEED_URL:
+    if not FEED_URLS:
         log("PS_FEED_URL is not set — nothing to do")
         return
     now = datetime.now(TZ)
-    text = fetch_feed()
-    header, products, cols = parse_feed(text)
-    log(f"feed: {len(text)} bytes, {len(products)} discounted products, columns mapped: {cols}")
+    products, header, cols = [], [], {}
+    for i, url in enumerate(FEED_URLS, 1):
+        try:
+            text = fetch_feed(url)
+            header, prods, cols = parse_feed(text)
+            products += prods
+            shops = sorted({p["adv"] for p in prods})
+            log(f"feed {i}: {len(text)} bytes, {len(prods)} discounted products, shops: {shops}")
+        except Exception as e:
+            log(f"feed {i} failed:", e)
     if debug:
         log("header:", header)
         for p in sorted(products, key=lambda p: p["discount"], reverse=True)[:5]:
