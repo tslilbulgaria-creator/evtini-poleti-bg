@@ -1,6 +1,21 @@
 {
  "day": "2026-11-26",
- "count": 0,
- "posted": [],
+ "count": 2,
+ "posted": [
+  {
+   "adv": "obui.bg",
+   "name": "Дамски ортопедични сандали от естествена кожа ST.FLY AQUA III 11025 SECOND SKIN",
+   "promo": 14.99,
+   "discount": 0.867,
+   "currency": "EUR"
+  },
+  {
+   "adv": "obui.bg",
+   "name": "Мъжки обувки от естествена кожа ST.FLY STREAM NAPPA S24 BROWN",
+   "promo": 23.47,
+   "discount": 0.823,
+   "currency": "EUR"
+  }
+ ],
  "teaser": false
 }
