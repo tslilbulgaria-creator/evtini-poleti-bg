@@ -28,8 +28,16 @@
   {
    "price": 56,
    "route_text": "София ⇄ Барселона"
+  },
+  {
+   "price": 75,
+   "route_text": "София ⇄ Nice"
+  },
+  {
+   "price": 44,
+   "route_text": "София ⇄ Малта"
   }
  ],
- "posts": 7,
+ "posts": 9,
  "verifies": 8
 }
