@@ -268,6 +268,9 @@ def run(debug=False):
         for p in cands:
             if sent >= MAX_PER_RUN or day["count"] >= MAX_PER_DAY:
                 break
+            recent = [d.get("adv") for d in day["posted"][-2:]]
+            if p["adv"] in recent and any(c["adv"] not in recent for c in cands):
+                continue  # vary shops: skip a shop that was just posted if another shop has deals
             try:
                 if not DRY_RUN:
                     publish(p)
