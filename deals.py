@@ -141,11 +141,14 @@ def parse_feed(text):
             i = cols.get(k)
             return r[i].strip() if i is not None and i < len(r) else ""
         price, promo = num(g("price")), num(g("promo"))
+        link, image = g("link"), g("image")
+        link = "https:" + link if link.startswith("//") else link
+        image = "https:" + image if image.startswith("//") else image
         if not price or not promo or promo >= price:
             continue
         products.append({
             "adv": g("adv"), "category": g("category"), "brand": g("brand"), "code": g("code"),
-            "name": g("name"), "link": g("link"), "image": g("image"), "currency": g("currency") or "EUR",
+            "name": g("name"), "link": link, "image": image, "currency": g("currency") or "EUR",
             "free_ship": g("free_ship").lower() in ("1", "yes", "да", "true"),
             "price": round(price, 2), "promo": round(promo, 2),
             "discount": round(1 - promo / price, 3),
