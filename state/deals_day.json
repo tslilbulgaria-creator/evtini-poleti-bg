@@ -1,6 +1,6 @@
 {
  "day": "2026-11-26",
- "count": 2,
+ "count": 4,
  "posted": [
   {
    "adv": "obui.bg",
@@ -14,6 +14,20 @@
    "name": "Мъжки обувки от естествена кожа ST.FLY STREAM NAPPA S24 BROWN",
    "promo": 23.47,
    "discount": 0.823,
+   "currency": "EUR"
+  },
+  {
+   "adv": "alleop.bg",
+   "name": "Прахосмукачка робот Roborock Q Revo Edge 5V1 QRES52-00, 18500 Pa, 5200 mAh, 66W, 3D Картографиране LiDar, Reactive AI, FlexiArm, Станция за зареждане, Автономия до 3 часа, Черен",
+   "promo": 499.9,
+   "discount": 0.667,
+   "currency": "EUR"
+  },
+  {
+   "adv": "perfume-bg.eu",
+   "name": "Hayari Paris ONLY FOR HER парфюм за жени 100 мл - EDP",
+   "promo": 33.9,
+   "discount": 0.79,
    "currency": "EUR"
   }
  ],
