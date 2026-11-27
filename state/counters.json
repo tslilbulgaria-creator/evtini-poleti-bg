@@ -16,8 +16,12 @@
   {
    "price": 35,
    "route_text": "Варна ⇄ Братислава"
+  },
+  {
+   "price": 51,
+   "route_text": "Варна ⇄ Basel"
   }
  ],
- "posts": 4,
+ "posts": 5,
  "verifies": 3
 }
