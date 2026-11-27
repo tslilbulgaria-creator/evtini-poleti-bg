@@ -48,8 +48,12 @@
   {
    "price": 80,
    "route_text": "София ⇄ Айндховен"
+  },
+  {
+   "price": 116,
+   "route_text": "София ⇄ Копенхаген"
   }
  ],
- "posts": 12,
+ "posts": 13,
  "verifies": 7
 }
