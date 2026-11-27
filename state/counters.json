@@ -20,8 +20,12 @@
   {
    "price": 51,
    "route_text": "Варна ⇄ Basel"
+  },
+  {
+   "price": 71,
+   "route_text": "София ⇄ Букурещ"
   }
  ],
- "posts": 5,
+ "posts": 6,
  "verifies": 3
 }
