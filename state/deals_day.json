@@ -1,6 +1,6 @@
 {
  "day": "2026-11-27",
- "count": 8,
+ "count": 10,
  "posted": [
   {
    "adv": "alleop.bg",
@@ -56,6 +56,20 @@
    "name": "Moncler pour Homme парфюм за мъже 150 мл - EDP",
    "promo": 65.9,
    "discount": 0.564,
+   "currency": "EUR"
+  },
+  {
+   "adv": "alleop.bg",
+   "name": "Прахосмукачка робот Eureka J12, 5000Pa, 3л, 300м2, Автономия до 150 мин, LiDAR, DuoDetect AI 3D, Гласов контрол, HEPA 11, Черен",
+   "promo": 299.0,
+   "discount": 0.61,
+   "currency": "EUR"
+  },
+  {
+   "adv": "technomani.bg",
+   "name": "Вентилатор с водна мъгла Elite EFM-1341WR, 60 W, 2 l, 3 скорости, 3 режима, Осцилация, Таймер, Дистанционно, Бял/черен",
+   "promo": 59.9,
+   "discount": 0.6,
    "currency": "EUR"
   }
  ],
