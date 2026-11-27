@@ -36,8 +36,12 @@
   {
    "price": 30,
    "route_text": "София ⇄ Кишинев"
+  },
+  {
+   "price": 71,
+   "route_text": "София ⇄ Щутгарт"
   }
  ],
- "posts": 9,
+ "posts": 10,
  "verifies": 7
 }
