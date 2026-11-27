@@ -12,8 +12,12 @@
   {
    "price": 39,
    "route_text": "Варна ⇄ Братислава"
+  },
+  {
+   "price": 35,
+   "route_text": "Варна ⇄ Братислава"
   }
  ],
- "posts": 3,
- "verifies": 2
+ "posts": 4,
+ "verifies": 3
 }
