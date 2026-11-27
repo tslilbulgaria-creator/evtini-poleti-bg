@@ -1,6 +1,6 @@
 {
  "day": "2026-11-27",
- "count": 2,
+ "count": 4,
  "posted": [
   {
    "adv": "alleop.bg",
@@ -14,6 +14,20 @@
    "name": "Мъжки боти от естествена кожа ST.FLY SEASON 27 GRAY",
    "promo": 30.64,
    "discount": 0.787,
+   "currency": "EUR"
+  },
+  {
+   "adv": "perfume-bg.eu",
+   "name": "Hayari Paris BRODERIE парфюм за жени 100 мл - EDP",
+   "promo": 49.9,
+   "discount": 0.691,
+   "currency": "EUR"
+  },
+  {
+   "adv": "technomani.bg",
+   "name": "Дебело одеяло с ръкави Huggle Rila Crafts, Розов",
+   "promo": 6.6,
+   "discount": 0.816,
    "currency": "EUR"
   }
  ],
