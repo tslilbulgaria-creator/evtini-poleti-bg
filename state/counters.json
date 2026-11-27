@@ -60,8 +60,12 @@
   {
    "price": 94,
    "route_text": "София ⇄ Малага"
+  },
+  {
+   "price": 99,
+   "route_text": "София ⇄ Хамбург"
   }
  ],
- "posts": 15,
+ "posts": 16,
  "verifies": 8
 }
