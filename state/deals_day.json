@@ -1,6 +1,6 @@
 {
  "day": "2026-11-27",
- "count": 10,
+ "count": 12,
  "posted": [
   {
    "adv": "alleop.bg",
@@ -71,7 +71,21 @@
    "promo": 59.9,
    "discount": 0.6,
    "currency": "EUR"
+  },
+  {
+   "adv": "obui.bg",
+   "name": "Мъжки обувки от естествена кожа ST.FLY SEASON III 1 NAPPA COCOA BROWN",
+   "promo": 23.98,
+   "discount": 0.796,
+   "currency": "EUR"
+  },
+  {
+   "adv": "armadabg.eu",
+   "name": "Официална чанта тип клъч 20099BL",
+   "promo": 7.21,
+   "discount": 0.7,
+   "currency": "EUR"
   }
  ],
- "teaser": false
+ "teaser": true
 }
