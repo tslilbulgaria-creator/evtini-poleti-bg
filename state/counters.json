@@ -8,8 +8,12 @@
   {
    "price": 63,
    "route_text": "София ⇄ Виена"
+  },
+  {
+   "price": 39,
+   "route_text": "Варна ⇄ Братислава"
   }
  ],
- "posts": 2,
+ "posts": 3,
  "verifies": 2
 }
