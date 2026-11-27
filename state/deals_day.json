@@ -1,6 +1,6 @@
 {
  "day": "2026-11-27",
- "count": 6,
+ "count": 8,
  "posted": [
   {
    "adv": "alleop.bg",
@@ -42,6 +42,20 @@
    "name": "Червена вечерна чанта клъч 20061RD",
    "promo": 7.21,
    "discount": 0.7,
+   "currency": "EUR"
+  },
+  {
+   "adv": "obui.bg",
+   "name": "Мъжки боти от естествена кожа ST.FLY ALEX 1 11016 DARK BLUE",
+   "promo": 35.74,
+   "discount": 0.763,
+   "currency": "EUR"
+  },
+  {
+   "adv": "perfume-bg.eu",
+   "name": "Moncler pour Homme парфюм за мъже 150 мл - EDP",
+   "promo": 65.9,
+   "discount": 0.564,
    "currency": "EUR"
   }
  ],
