@@ -1,6 +1,6 @@
 {
  "day": "2026-11-27",
- "count": 4,
+ "count": 6,
  "posted": [
   {
    "adv": "alleop.bg",
@@ -28,6 +28,20 @@
    "name": "Дебело одеяло с ръкави Huggle Rila Crafts, Розов",
    "promo": 6.6,
    "discount": 0.816,
+   "currency": "EUR"
+  },
+  {
+   "adv": "alleop.bg",
+   "name": "Сешоар с безчетков мотор AI AENO HD5 AHD0005W, 1500W, 2 скорости, 3 нива, 67 dB, Гласов контрол, Бял",
+   "promo": 99.9,
+   "discount": 0.699,
+   "currency": "EUR"
+  },
+  {
+   "adv": "armadabg.eu",
+   "name": "Червена вечерна чанта клъч 20061RD",
+   "promo": 7.21,
+   "discount": 0.7,
    "currency": "EUR"
   }
  ],
