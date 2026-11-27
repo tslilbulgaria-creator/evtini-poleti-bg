@@ -28,8 +28,12 @@
   {
    "price": 66,
    "route_text": "София ⇄ Валенсия"
+  },
+  {
+   "price": 72,
+   "route_text": "София ⇄ Шарм ел Шейх"
   }
  ],
- "posts": 7,
- "verifies": 5
+ "posts": 8,
+ "verifies": 6
 }
