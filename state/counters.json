@@ -64,8 +64,12 @@
   {
    "price": 99,
    "route_text": "София ⇄ Хамбург"
+  },
+  {
+   "price": 38,
+   "route_text": "София ⇄ Рим"
   }
  ],
- "posts": 16,
+ "posts": 17,
  "verifies": 8
 }
