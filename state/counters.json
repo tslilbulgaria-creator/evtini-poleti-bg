@@ -32,8 +32,12 @@
   {
    "price": 72,
    "route_text": "София ⇄ Шарм ел Шейх"
+  },
+  {
+   "price": 30,
+   "route_text": "София ⇄ Кишинев"
   }
  ],
- "posts": 8,
- "verifies": 6
+ "posts": 9,
+ "verifies": 7
 }
