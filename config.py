@@ -69,6 +69,6 @@ DRY_RUN = os.environ.get("DRY_RUN", "") == "1"
 
 # Keep the channel alive: if a run finds no new deal and the last post is older than
 # FILLER_GAP_MIN minutes, post the best cheap round trip not posted in FILLER_REPOST_DAYS.
-FILLER_GAP_MIN = 55
+FILLER_GAP_MIN = 50
 FILLER_REPOST_DAYS = 2
 FILLER_MAX_PRICE = 150

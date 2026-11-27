@@ -325,6 +325,8 @@ def already_posted(deal, posted, now):
     if not prev:
         return False
     age = now - datetime.fromisoformat(prev["at"])
+    if age < timedelta(hours=24):  # never repeat a destination on the same day
+        return True
     if age > timedelta(days=C.REPOST_AFTER_DAYS):
         return False
     return deal["price"] > prev["price"] * (1 - C.REPOST_EXTRA_DROP)

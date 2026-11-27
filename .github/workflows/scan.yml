@@ -19,7 +19,7 @@ concurrency:
 jobs:
   scan:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 350
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -29,7 +29,7 @@ jobs:
       - name: Install image library
         run: pip install --quiet pillow
 
-      - name: Run scanner
+      - name: Run scanner (loops ~5.5h so the channel never waits for GitHub's delayed cron)
         env:
           TP_TOKEN: ${{ secrets.TP_TOKEN }}
           TP_MARKER: ${{ secrets.TP_MARKER }}
@@ -39,21 +39,25 @@ jobs:
           FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
           FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
           DRY_RUN: ${{ (github.event.inputs.mode == 'dry' || github.event.inputs.mode == 'fbcheck') && '1' || '' }}
-        run: |
-          if [ "${{ github.event.inputs.mode }}" = "test" ]; then
-            python main.py --test
-          elif [ "${{ github.event.inputs.mode }}" = "fbcheck" ]; then
-            python main.py --fbcheck
-          else
-            python main.py
-          fi
-
-      - name: Save state
-        if: always()
+          MODE: ${{ github.event.inputs.mode || 'scan' }}
         run: |
           git config user.name "deal-bot"
           git config user.email "deal-bot@users.noreply.github.com"
-          git add state/ || true
-          git diff --cached --quiet || git commit -m "state update [skip ci]"
-          git pull --rebase -q || true
-          git push -q || true
+          save_state() {
+            git add state/ || true
+            git diff --cached --quiet || git commit -q -m "state update [skip ci]"
+            git pull --rebase -q || true
+            git push -q || true
+          }
+          if [ "$MODE" = "test" ]; then python main.py --test; exit 0; fi
+          if [ "$MODE" = "fbcheck" ]; then python main.py --fbcheck; exit 0; fi
+          if [ "$MODE" = "dry" ]; then python main.py; exit 0; fi
+          START=$(date +%s)
+          while true; do
+            git pull --rebase -q || true
+            python main.py || echo "scan failed, continuing"
+            save_state
+            # stop before the 6h job limit; the next queued run takes over
+            [ $(( $(date +%s) - START )) -gt 19200 ] && break
+            sleep 1500
+          done
