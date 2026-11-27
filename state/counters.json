@@ -44,8 +44,12 @@
   {
    "price": 85,
    "route_text": "София ⇄ Хургада"
+  },
+  {
+   "price": 80,
+   "route_text": "София ⇄ Айндховен"
   }
  ],
- "posts": 11,
+ "posts": 12,
  "verifies": 7
 }
