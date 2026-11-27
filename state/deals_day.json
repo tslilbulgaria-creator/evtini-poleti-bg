@@ -1,91 +1,21 @@
 {
- "day": "2026-11-26",
- "count": 12,
+ "day": "2026-11-27",
+ "count": 2,
  "posted": [
   {
-   "adv": "obui.bg",
-   "name": "Дамски ортопедични сандали от естествена кожа ST.FLY AQUA III 11025 SECOND SKIN",
-   "promo": 14.99,
-   "discount": 0.867,
-   "currency": "EUR"
-  },
-  {
-   "adv": "obui.bg",
-   "name": "Мъжки обувки от естествена кожа ST.FLY STREAM NAPPA S24 BROWN",
-   "promo": 23.47,
-   "discount": 0.823,
-   "currency": "EUR"
-  },
-  {
    "adv": "alleop.bg",
-   "name": "Прахосмукачка робот Roborock Q Revo Edge 5V1 QRES52-00, 18500 Pa, 5200 mAh, 66W, 3D Картографиране LiDar, Reactive AI, FlexiArm, Станция за зареждане, Автономия до 3 часа, Черен",
-   "promo": 499.9,
-   "discount": 0.667,
-   "currency": "EUR"
-  },
-  {
-   "adv": "perfume-bg.eu",
-   "name": "Hayari Paris ONLY FOR HER парфюм за жени 100 мл - EDP",
-   "promo": 33.9,
-   "discount": 0.79,
-   "currency": "EUR"
-  },
-  {
-   "adv": "technomani.bg",
-   "name": "Полилей Sheen 521SHN1128, 136х28 см, Метално тяло, IP20, E27, Черен",
-   "promo": 9.9,
-   "discount": 0.833,
-   "currency": "EUR"
-  },
-  {
-   "adv": "armadabg.eu",
-   "name": "Елегантна дамска бяла чанта 20047WH",
-   "promo": 8.44,
-   "discount": 0.7,
-   "currency": "EUR"
-  },
-  {
-   "adv": "alleop.bg",
-   "name": "Вентилатор за таван с LED лампа 2в1 Beper P206VEN650, 40W, 3 скорости, Таймер, Бял",
-   "promo": 69.9,
-   "discount": 0.805,
-   "currency": "EUR"
-  },
-  {
-   "adv": "obui.bg",
-   "name": "Мъжки боти от естествена кожа ST.FLY SEASON 27 BROWN VELOUR",
-   "promo": 30.64,
-   "discount": 0.787,
-   "currency": "EUR"
-  },
-  {
-   "adv": "perfume-bg.eu",
-   "name": "Hayari New Oud унисекс парфюм 100 мл - EDP",
-   "promo": 49.9,
-   "discount": 0.726,
-   "currency": "EUR"
-  },
-  {
-   "adv": "technomani.bg",
-   "name": "Нагревател за вода Oliver Voltz OV57100F, 3300W, За плот, Сензорно управление, Дигитален дисплей, Инокс",
-   "promo": 49.9,
-   "discount": 0.686,
-   "currency": "EUR"
-  },
-  {
-   "adv": "alleop.bg",
-   "name": "Сешоар с безчетков мотор AI AENO HD5 AHD0005G, 1500W, 2 скорости, 3 нива, 67 dB, Гласов контрол, Сив",
+   "name": "Сешоар с безчетков мотор AI AENO HD5 AHD0005B, 1500W, 2 скорости, 3 нива, 67 dB, Гласов контрол, Черен",
    "promo": 99.9,
    "discount": 0.699,
    "currency": "EUR"
   },
   {
-   "adv": "armadabg.eu",
-   "name": "Дамска черна чанта клъч велур 20070BL",
-   "promo": 8.28,
-   "discount": 0.7,
+   "adv": "obui.bg",
+   "name": "Мъжки боти от естествена кожа ST.FLY SEASON 27 GRAY",
+   "promo": 30.64,
+   "discount": 0.787,
    "currency": "EUR"
   }
  ],
- "teaser": true
+ "teaser": false
 }
