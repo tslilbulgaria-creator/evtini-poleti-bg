@@ -56,8 +56,12 @@
   {
    "price": 112,
    "route_text": "София ⇄ Палма де Майорка"
+  },
+  {
+   "price": 94,
+   "route_text": "София ⇄ Малага"
   }
  ],
- "posts": 14,
+ "posts": 15,
  "verifies": 7
 }
