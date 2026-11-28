@@ -1,6 +1,6 @@
 {
  "day": "2026-11-28",
- "count": 4,
+ "count": 6,
  "posted": [
   {
    "adv": "alleop.bg",
@@ -28,6 +28,20 @@
    "name": "Mugler Angel Elixir парфюм за жени 100 мл - EDP",
    "promo": 69.9,
    "discount": 0.553,
+   "currency": "EUR"
+  },
+  {
+   "adv": "alleop.bg",
+   "name": "Масажираща седалка Medivon Cosy Mesh MD-R4505, 4 зони, 5 режима, Затопляне, Таймер до 60 мин, Черен/сив",
+   "promo": 54.9,
+   "discount": 0.732,
+   "currency": "EUR"
+  },
+  {
+   "adv": "armadabg.eu",
+   "name": "Дамски сив клъч велур 20060GY",
+   "promo": 6.44,
+   "discount": 0.7,
    "currency": "EUR"
   }
  ],
