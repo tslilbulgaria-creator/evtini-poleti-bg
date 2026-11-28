@@ -32,8 +32,12 @@
   {
    "price": 31,
    "route_text": "Варна ⇄ Братислава"
+  },
+  {
+   "price": 24,
+   "route_text": "София ⇄ Кишинев"
   }
  ],
- "posts": 8,
+ "posts": 9,
  "verifies": 8
 }
