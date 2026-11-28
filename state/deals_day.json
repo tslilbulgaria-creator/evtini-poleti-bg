@@ -1,91 +1,21 @@
 {
- "day": "2026-11-27",
- "count": 12,
+ "day": "2026-11-28",
+ "count": 2,
  "posted": [
   {
    "adv": "alleop.bg",
-   "name": "Сешоар с безчетков мотор AI AENO HD5 AHD0005B, 1500W, 2 скорости, 3 нива, 67 dB, Гласов контрол, Черен",
-   "promo": 99.9,
-   "discount": 0.699,
+   "name": "Кантар-анализатор Klausberg KB 7941, До 180 кг, BIA, Bluetooth, LCD, Закалено стъкло, Smart, Бял",
+   "promo": 34.99,
+   "discount": 0.772,
    "currency": "EUR"
   },
   {
    "adv": "obui.bg",
-   "name": "Мъжки боти от естествена кожа ST.FLY SEASON 27 GRAY",
-   "promo": 30.64,
-   "discount": 0.787,
-   "currency": "EUR"
-  },
-  {
-   "adv": "perfume-bg.eu",
-   "name": "Hayari Paris BRODERIE парфюм за жени 100 мл - EDP",
-   "promo": 49.9,
-   "discount": 0.691,
-   "currency": "EUR"
-  },
-  {
-   "adv": "technomani.bg",
-   "name": "Дебело одеяло с ръкави Huggle Rila Crafts, Розов",
-   "promo": 6.6,
-   "discount": 0.816,
-   "currency": "EUR"
-  },
-  {
-   "adv": "alleop.bg",
-   "name": "Сешоар с безчетков мотор AI AENO HD5 AHD0005W, 1500W, 2 скорости, 3 нива, 67 dB, Гласов контрол, Бял",
-   "promo": 99.9,
-   "discount": 0.699,
-   "currency": "EUR"
-  },
-  {
-   "adv": "armadabg.eu",
-   "name": "Червена вечерна чанта клъч 20061RD",
-   "promo": 7.21,
-   "discount": 0.7,
-   "currency": "EUR"
-  },
-  {
-   "adv": "obui.bg",
-   "name": "Мъжки боти от естествена кожа ST.FLY ALEX 1 11016 DARK BLUE",
-   "promo": 35.74,
-   "discount": 0.763,
-   "currency": "EUR"
-  },
-  {
-   "adv": "perfume-bg.eu",
-   "name": "Moncler pour Homme парфюм за мъже 150 мл - EDP",
-   "promo": 65.9,
-   "discount": 0.564,
-   "currency": "EUR"
-  },
-  {
-   "adv": "alleop.bg",
-   "name": "Прахосмукачка робот Eureka J12, 5000Pa, 3л, 300м2, Автономия до 150 мин, LiDAR, DuoDetect AI 3D, Гласов контрол, HEPA 11, Черен",
-   "promo": 299.0,
-   "discount": 0.61,
-   "currency": "EUR"
-  },
-  {
-   "adv": "technomani.bg",
-   "name": "Вентилатор с водна мъгла Elite EFM-1341WR, 60 W, 2 l, 3 скорости, 3 режима, Осцилация, Таймер, Дистанционно, Бял/черен",
-   "promo": 59.9,
-   "discount": 0.6,
-   "currency": "EUR"
-  },
-  {
-   "adv": "obui.bg",
-   "name": "Мъжки обувки от естествена кожа ST.FLY SEASON III 1 NAPPA COCOA BROWN",
-   "promo": 23.98,
-   "discount": 0.796,
-   "currency": "EUR"
-  },
-  {
-   "adv": "armadabg.eu",
-   "name": "Официална чанта тип клъч 20099BL",
-   "promo": 7.21,
-   "discount": 0.7,
+   "name": "Мъжки обувки от естествена кожа ST.FLY ALEX 2 BRUSH OFF LIMO BLUE",
+   "promo": 30.67,
+   "discount": 0.774,
    "currency": "EUR"
   }
  ],
- "teaser": true
+ "teaser": false
 }
