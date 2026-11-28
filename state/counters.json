@@ -4,8 +4,12 @@
   {
    "price": 38,
    "route_text": "София ⇄ Варшава"
+  },
+  {
+   "price": 60,
+   "route_text": "София ⇄ Маракеш"
   }
  ],
- "posts": 1,
+ "posts": 2,
  "verifies": 0
 }
