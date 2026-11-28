@@ -12,8 +12,12 @@
   {
    "price": 62,
    "route_text": "София ⇄ Палермо"
+  },
+  {
+   "price": 71,
+   "route_text": "София ⇄ Истанбул"
   }
  ],
- "posts": 3,
- "verifies": 0
+ "posts": 4,
+ "verifies": 1
 }
