@@ -1,6 +1,6 @@
 {
  "day": "2026-11-28",
- "count": 2,
+ "count": 4,
  "posted": [
   {
    "adv": "alleop.bg",
@@ -14,6 +14,20 @@
    "name": "Мъжки обувки от естествена кожа ST.FLY ALEX 2 BRUSH OFF LIMO BLUE",
    "promo": 30.67,
    "discount": 0.774,
+   "currency": "EUR"
+  },
+  {
+   "adv": "technomani.bg",
+   "name": "Магическо одеяло, светещо в тъмното Rila Crafts",
+   "promo": 2.5,
+   "discount": 0.875,
+   "currency": "EUR"
+  },
+  {
+   "adv": "perfume-bg.eu",
+   "name": "Mugler Angel Elixir парфюм за жени 100 мл - EDP",
+   "promo": 69.9,
+   "discount": 0.553,
    "currency": "EUR"
   }
  ],
