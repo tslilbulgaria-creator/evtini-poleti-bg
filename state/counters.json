@@ -1,6 +1,11 @@
 {
  "day": "2026-11-28",
- "deals": [],
- "posts": 0,
+ "deals": [
+  {
+   "price": 38,
+   "route_text": "София ⇄ Варшава"
+  }
+ ],
+ "posts": 1,
  "verifies": 0
 }
