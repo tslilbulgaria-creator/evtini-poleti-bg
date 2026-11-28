@@ -8,8 +8,12 @@
   {
    "price": 60,
    "route_text": "София ⇄ Маракеш"
+  },
+  {
+   "price": 62,
+   "route_text": "София ⇄ Палермо"
   }
  ],
- "posts": 2,
+ "posts": 3,
  "verifies": 0
 }
