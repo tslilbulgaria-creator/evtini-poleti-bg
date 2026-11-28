@@ -16,8 +16,12 @@
   {
    "price": 71,
    "route_text": "София ⇄ Истанбул"
+  },
+  {
+   "price": 44,
+   "route_text": "София ⇄ Брюксел"
   }
  ],
- "posts": 4,
- "verifies": 2
+ "posts": 5,
+ "verifies": 3
 }
