@@ -28,8 +28,12 @@
   {
    "price": 59,
    "route_text": "София ⇄ Барселона"
+  },
+  {
+   "price": 31,
+   "route_text": "Варна ⇄ Братислава"
   }
  ],
- "posts": 7,
+ "posts": 8,
  "verifies": 8
 }
