@@ -1,6 +1,6 @@
 {
  "day": "2026-11-28",
- "count": 6,
+ "count": 8,
  "posted": [
   {
    "adv": "alleop.bg",
@@ -42,6 +42,20 @@
    "name": "Дамски сив клъч велур 20060GY",
    "promo": 6.44,
    "discount": 0.7,
+   "currency": "EUR"
+  },
+  {
+   "adv": "obui.bg",
+   "name": "Мъжки боти от естествена кожа ST.FLY ALEX 1 11015 TOUR",
+   "promo": 35.74,
+   "discount": 0.752,
+   "currency": "EUR"
+  },
+  {
+   "adv": "technomani.bg",
+   "name": "Шатра MUHLER G1104, 3x3 m. Сив",
+   "promo": 99.9,
+   "discount": 0.535,
    "currency": "EUR"
   }
  ],
